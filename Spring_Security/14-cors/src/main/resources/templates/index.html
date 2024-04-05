@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="fetchData() || fetchDataXMLHttpRequest()">
+<h1>Hello from Demo Controller</h1>
+
+<button type="button" onclick="fetchData()">Fetch API</button>
+<button type="button" onclick="fetchDataXMLHttpRequest()">XMLHttpRequest</button>
+<p id="fetchResponse"></p>
+
+<script type="application/javascript">
+    async function fetchData()
+    {
+        try {
+            const response = await fetch("http://127.0.0.1:8080/demo/data", {method: "GET"});
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+
+            const data = await response.text();
+            const p = document.querySelector("#fetchResponse");
+            p.innerText += data;
+            p.innerHTML += "<br>";
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+
+    function fetchDataXMLHttpRequest()
+    {
+        const xhr = new XMLHttpRequest();
+        // simulating a request from another origin. It works because the browser doesn't know that
+        // localhost and 127.0.0.1 refers to the same thing (the address is obviously different).
+        xhr.open("GET", "http://127.0.0.1:8080/demo/data");
+
+        xhr.onload = function ()
+        {
+            if (xhr.status === 200) {
+                const p = document.querySelector("#fetchResponse");
+                p.innerText += xhr.responseText;
+                p.innerHTML += "<br>";
+            }
+            else {
+                console.error('Error fetching data:', xhr.statusText);
+            }
+        }
+
+        xhr.onerror = function ()
+        {
+            console.error('Network error:', xhr.statusText);
+        };
+
+        xhr.send();
+    }
+</script>
+</body>
+</html>
