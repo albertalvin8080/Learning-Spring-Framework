@@ -1,0 +1,24 @@
+server:
+  error:
+    include-stacktrace: on_param
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_test?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        type: TRACE # show parameters (in theory)
+        show_sql: false # use 'logging: level:' for better performance
+        format_sql: true # formats even if the 'show_sql' is false
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE # show parameters (in theory)

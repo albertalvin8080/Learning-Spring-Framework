@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0.25
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongodb_data:/data/db
+#    environment:
+#      disabled because it would need authentication otherwise
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=1234
+
+# docker-compose exec -it mongodb mongosh --username admin --password 1234
