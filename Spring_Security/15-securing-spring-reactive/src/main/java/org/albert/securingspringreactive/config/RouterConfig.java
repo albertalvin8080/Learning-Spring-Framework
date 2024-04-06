@@ -3,7 +3,7 @@ package org.albert.securingspringreactive.config;
 import lombok.RequiredArgsConstructor;
 import org.albert.securingspringreactive.handlers.AuthInfoHandler;
 import org.albert.securingspringreactive.handlers.DataHandler;
-import org.albert.securingspringreactive.handlers.SomethingHandler;
+import org.albert.securingspringreactive.handlers.HelloHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -16,7 +16,7 @@ public class RouterConfig {
 
     private final DataHandler dataHandler;
     private final AuthInfoHandler authInfoHandler;
-    private final SomethingHandler somethingHandler;
+    private final HelloHandler helloHandler;
 
     @Bean
     public RouterFunction<ServerResponse> routerFunction() {
@@ -25,7 +25,7 @@ public class RouterConfig {
                 .path("/demo", builder -> builder
                         .GET("/data", dataHandler)
                         .GET("/auth", authInfoHandler)
-                        .POST("/smth", somethingHandler)
+                        .POST("/hello", helloHandler)
                 )
                 .build();
     }

@@ -20,7 +20,8 @@ public class AuthInfoHandler implements HandlerFunction<ServerResponse> {
                 .getContext()
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getName);
-//                .map(a -> { // used for debugging
+                // used for debugging
+//                .map(a -> {
 //                    System.out.println(a.getDetails());
 //                    return a.getDetails();
 //                });

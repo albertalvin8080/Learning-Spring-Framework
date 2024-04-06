@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Component
-public class SomethingHandler implements HandlerFunction<ServerResponse> {
+public class HelloHandler implements HandlerFunction<ServerResponse> {
     @Override
     public @NonNull Mono<ServerResponse> handle(@NonNull ServerRequest request) {
         final Flux<String> just = Flux

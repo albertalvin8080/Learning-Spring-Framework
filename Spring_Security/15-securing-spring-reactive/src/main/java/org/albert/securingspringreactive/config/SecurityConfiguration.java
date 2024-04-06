@@ -24,10 +24,10 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         CookieServerCsrfTokenRepository csrfTokenRepository =
                 CookieServerCsrfTokenRepository.withHttpOnlyFalse();
-//        csrfTokenRepository.setCookieCustomizer(c -> c
-//                .sameSite("Lax")
-//                .secure(false) // Set to true when deploying over HTTPS
-//        ); // not necessary
+        csrfTokenRepository.setCookieCustomizer(c -> c
+                .sameSite("Lax")
+                .secure(false) // Set to true when deploying over HTTPS
+        ); // not necessary
 
         serverHttpSecurity
                 .authorizeExchange(a -> a
