@@ -9,12 +9,12 @@ import reactor.core.publisher.Mono;
 public class CsrfTokenTestingHandler implements HandlerFunction<ServerResponse> {
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
-        String key = CsrfToken.class.getName();
-        Mono<CsrfToken> csrfToken = exchange.getAttribute(key) != null ? exchange.getAttribute(key) : Mono.empty();
-
-        return csrfToken.doOnSuccess(token -> {
-            // Perform operations with the token here
-        });
+//        String key = CsrfToken.class.getName();
+//        Mono<CsrfToken> csrfToken = exchange.getAttribute(key) != null ? exchange.getAttribute(key) : Mono.empty();
+//
+//        return csrfToken.doOnSuccess(token -> {
+//            // Perform operations with the token here
+//        });
 
         return null;
     }

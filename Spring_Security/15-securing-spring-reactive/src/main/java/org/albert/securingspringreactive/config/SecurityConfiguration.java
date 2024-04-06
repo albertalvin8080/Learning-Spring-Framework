@@ -1,5 +1,6 @@
 package org.albert.securingspringreactive.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -18,16 +19,17 @@ import org.springframework.security.web.server.csrf.CookieServerCsrfTokenReposit
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         CookieServerCsrfTokenRepository csrfTokenRepository =
                 CookieServerCsrfTokenRepository.withHttpOnlyFalse();
-        csrfTokenRepository.setCookieCustomizer(c -> c
-                .sameSite("Lax")
-                .secure(false) // Set to true when deploying over HTTPS
-        ); // not necessary
+//        csrfTokenRepository.setCookieCustomizer(c -> c
+//                .sameSite("Lax")
+//                .secure(false) // Set to true when deploying over HTTPS
+//        ); // not necessary
 
         serverHttpSecurity
                 .authorizeExchange(a -> a
