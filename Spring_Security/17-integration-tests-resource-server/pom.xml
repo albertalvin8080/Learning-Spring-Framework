@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.albert</groupId>
-    <artifactId>unit-tests-resource-server</artifactId>
+    <artifactId>integration-tests-resource-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>17-unit-tests-resource-server</name>
-    <description>17-unit-tests-resource-server</description>
+    <name>17-integration-tests-resource-server</name>
+    <description>17-integration-tests-resource-server</description>
     <properties>
         <java.version>17</java.version>
     </properties>
