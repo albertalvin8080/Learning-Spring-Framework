@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    container_name: 'keycloak'
+#    volumes:
+#      - ./imports:/opt/jboss/keycloak/imports
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "4000:8080"
+    command:
+      [ "start-dev", "--http-port", "8080"]
