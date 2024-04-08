@@ -1,5 +1,6 @@
 package org.albert.reactiveoauth2resourceserver.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -10,15 +11,18 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableReactiveMethodSecurity
 public class SecurityConfig {
 
+    @Value("${jwkUri}")
+    private String jwkUri;
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http)
     {
         http.oauth2ResourceServer(serverSpec -> serverSpec
-                .jwt(jwtSpec -> jwtSpec.jwkSetUri(""))
+                .jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri))
         );
 
         http.authorizeExchange(a -> a
-                .pathMatchers("/demo/data").hasAuthority("read")
+//                .pathMatchers("/demo/data").hasAuthority("read")
                 .anyExchange().authenticated()
         );
 
