@@ -1,5 +1,6 @@
 package org.albert.reactiveoauth2resourceserver.config;
 
+import org.albert.reactiveoauth2resourceserver.security.CustomJwtAuthenticationTokenConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,10 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http)
     {
         http.oauth2ResourceServer(serverSpec -> serverSpec
-                .jwt(jwtSpec -> jwtSpec.jwkSetUri(jwkUri))
+                .jwt(jwtSpec -> jwtSpec
+                        .jwkSetUri(jwkUri)
+//                        .jwtAuthenticationConverter(new CustomJwtAuthenticationTokenConverter())
+                )
         );
 
         http.authorizeExchange(a -> a
