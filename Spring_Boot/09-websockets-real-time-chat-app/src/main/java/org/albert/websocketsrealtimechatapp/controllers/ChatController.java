@@ -10,8 +10,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
+    /* "/app/chat.sendMessage" */
     @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
+    @SendTo("/topic/public")            // to which websocket send te payload
     public ChatMessage sendMessage(
             @Payload ChatMessage chatMessage
     ) {
