@@ -31,7 +31,8 @@ public class ChatRoomService {
     }
 
     private String createChatRoom(String senderId, String recipientId) {
-        // DO NOT invert this. The chats from both sides must have the same ids.
+        // DO NOT invert this for the second ChatRoom.
+        // The chats from both sides must have the same ids.
         final String chatId = String.format("%s_%s", recipientId, senderId);
 
         final ChatRoom cr1 = ChatRoom.builder()
@@ -45,6 +46,9 @@ public class ChatRoomService {
                 .senderId(recipientId)
                 .recipientId(senderId)
                 .build();
+
+        chatRoomRepository.save(cr1);
+        chatRoomRepository.save(cr2);
 
         return chatId;
     }

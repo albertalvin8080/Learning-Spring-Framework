@@ -34,4 +34,4 @@ volumes:
 # 2 - This volume won't have a specific name assigned to it.
   mongo: {}
 
-# docker exec -it mongodb bash < mongosh -u root -p root
+# docker exec -it mongodb bash -c "mongosh -u root -p root"
