@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserRepository extends MongoRepository<User, String>
 {
-    @Query("db.user.find({status: 'ONLINE'})")
-    List<User> findOnlineUsers();
+    @Query("db.user.find({})")
+    List<User> findAllUsers();
 }

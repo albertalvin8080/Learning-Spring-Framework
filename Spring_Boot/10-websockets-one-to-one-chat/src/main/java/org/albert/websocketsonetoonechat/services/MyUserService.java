@@ -19,8 +19,8 @@ public class MyUserService {
         return userRepository.save(user);
     }
 
-    public List<User> findOnlineUsers() {
-        return userRepository.findOnlineUsers();
+    public List<User> findAllUsers() {
+        return userRepository.findAllUsers();
     }
 
     public User disconnect(User user) {

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>
 {
-//    @Query("db.chatRoom.find({senderId: ?0, recipientId: ?1})")
+//    @Query("db.chatRoom.find({senderId: ?0, recipientId: ?1})") // non unique result (???)
     Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId);
 }

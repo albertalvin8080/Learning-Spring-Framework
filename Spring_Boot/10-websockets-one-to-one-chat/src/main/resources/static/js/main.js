@@ -8,6 +8,7 @@ const currentUser = document.querySelector(".current-user");
 const usersContainer = document.querySelector(".users");
 
 const chatHistoryBody = document.querySelector(".body");
+const chatHistoryHead = document.querySelector(".head");
 const chatContainer = document.querySelector(".container");
 
 const btnSendMessage = document.querySelector("#sendMessage");
@@ -18,13 +19,21 @@ let recipientName = null;
 let sockJS = null;
 let stompClient = null;
 
+// scroll down when a new message is added
+chatHistoryBody.addEventListener('DOMNodeInserted', scrollToBottom);
+
+function scrollToBottom()
+{
+    chatHistoryBody.scrollTop = chatHistoryBody.scrollHeight;
+}
+
 btnJoin.addEventListener("click", onJoin, true);
 
 function onJoin(event)
 {
     event.preventDefault();
 
-    nickName = inputUserName.value.trim();
+    nickName = inputUserName.value.replaceAll(/\s+/g, "");
 
     sockJS = new SockJS("/ws");
     stompClient = Stomp.over(sockJS);
@@ -39,7 +48,7 @@ function onJoin(event)
 function onConnect()
 {
     stompClient.subscribe(`/user/${nickName}/queue/messages`, onMessageReceived);
-    // stompClient.subscribe(`/user/topic/public`, onTopicReceived);
+    stompClient.subscribe(`/user/topic/public`, onTopicReceived);
 
     loadOnlineUsers().then();
 
@@ -58,6 +67,7 @@ function onTopicReceived(payload)
 
     let listOfNickNames = [...document.querySelectorAll(".nickName")];
     // checking if there's not already a user with this nickName
+    // .filter()
     if (listOfNickNames.some(p => p.innerText === user.nickName)) return;
 
     const userDiv = document.createElement("div");
@@ -66,7 +76,7 @@ function onTopicReceived(payload)
             <div class="user-profile">
                 <img class="profile-img" src="images/profile.png">
                 <p class="nickName">${user.nickName}</p>
-                <p class="last-message">I want to go home...</p>
+                <p class="status">${user.status}</p>
             </div>
         `;
     userDiv.addEventListener("click", () => loadChat(user.nickName), true);
@@ -85,7 +95,7 @@ function onError()
 
 async function loadOnlineUsers()
 {
-    const response = await fetch("/online-users");
+    const response = await fetch("/all-users");
     const users = await response.json();
 
     for (let user of users) {
@@ -97,7 +107,7 @@ async function loadOnlineUsers()
             <div class="user-profile">
                 <img class="profile-img" src="images/profile.png">
                 <p class="nickName">${user.nickName}</p>
-                <p class="last-message">I want to go home...</p>
+                <p class="status">${user.status}</p>
             </div>
         `;
         userDiv.addEventListener("click", () => loadChat(user.nickName), true);
@@ -109,6 +119,11 @@ async function loadChat(recipientId)
 {
     const response = await fetch(`/messages/${nickName}/${recipientId}`);
     const chatMessages = await response.json();
+
+    chatHistoryHead.innerHTML = `
+        <img class="profile-img" src="images/profile2.png">
+        <p class="nickName">${recipientId}</p>
+    `;
 
     recipientName = recipientId;
     chatHistoryBody.innerHTML = "";
@@ -141,7 +156,8 @@ function appendMessage(message)
 function onMessageReceived(payload)
 {
     const message = JSON.parse(payload.body);
-    appendMessage(message);
+    if (message.senderId === recipientName)
+        appendMessage(message);
 }
 
 btnSendMessage.addEventListener("click", sendMessage, true);

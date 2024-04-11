@@ -1,7 +1,6 @@
 package org.albert.websocketsonetoonechat.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.albert.websocketsonetoonechat.model.user.Status;
 import org.albert.websocketsonetoonechat.model.user.User;
 import org.albert.websocketsonetoonechat.services.MyUserService;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -37,9 +35,9 @@ public class UserController {
         return userService.disconnect(user);
     }
 
-    @GetMapping("/online-users")
-    public ResponseEntity<List<User>> onlineUsers() {
-        return ResponseEntity.ok(userService.findOnlineUsers());
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>> allUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
     }
 
 //    @ResponseBody

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String>
 {
-    @Query("db.chatMessage.find({chatId: ?0})")
+//    @Query("db.chatMessage.find({chatId: ?0})") // this query is finding ALL messages, not just the chatId message
     List<ChatMessage> findAllByChatId(String chatId);
 }
