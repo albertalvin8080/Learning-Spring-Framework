@@ -3,6 +3,7 @@
 const formJoin = document.querySelector("#joinForm");
 const btnJoin = document.querySelector("#join");
 const inputUserName = document.querySelector("#username");
+const currentUser = document.querySelector(".current-user");
 
 const usersContainer = document.querySelector(".users");
 
@@ -13,6 +14,7 @@ const btnSendMessage = document.querySelector("#sendMessage");
 const inputMessage = document.querySelector("#message");
 
 let nickName = null;
+let recipientName = null;
 let sockJS = null;
 let stompClient = null;
 
@@ -30,12 +32,14 @@ function onJoin(event)
 
     formJoin.classList.add("hidden");
     chatContainer.classList.remove("hidden");
+
+    currentUser.querySelector(".nickName").innerText = nickName;
 }
 
 function onConnect()
 {
-    stompClient.subscribe(`user/${nickName}/queue/messages`, onMessageReceived);
-    stompClient.subscribe(`user/topic`, onDisconnected);
+    stompClient.subscribe(`/user/${nickName}/queue/messages`, onMessageReceived);
+    stompClient.subscribe(`/topic/public`, onTopicReceived);
 
     loadOnlineUsers().then();
 
@@ -46,13 +50,31 @@ function onConnect()
     );
 }
 
+function onTopicReceived(payload) {
+    const user = JSON.parse(payload.body);
+
+    if(user.status === "OFFLINE" || user.nickName === nickName) return;
+
+    const userDiv = document.createElement("div");
+    userDiv.classList.add("user");
+    userDiv.innerHTML = `
+            <div class="user-profile">
+                <img class="profile-img" src="images/profile.png">
+                <p class="nickName">${user.nickName}</p>
+                <p class="last-message">I want to go home...</p>
+            </div>
+        `;
+    userDiv.addEventListener("click", () => loadChat(user.nickName), true);
+    usersContainer.appendChild(userDiv);
+}
+
 function onDisconnected(payload) {
     const disconnectedUser = JSON.parse(payload.body);
 }
 
 function onError()
 {
-
+    console.log("Could not connect to socket.");
 }
 
 async function loadOnlineUsers()
@@ -61,10 +83,12 @@ async function loadOnlineUsers()
     const users = await response.json();
 
     for (let user of users) {
+        if(user.nickName === nickName) continue;
+
         const userDiv = document.createElement("div");
         userDiv.classList.add("user");
         userDiv.innerHTML = `
-            <div class="user-profile" data-recipient="${user.nickName}">
+            <div class="user-profile">
                 <img class="profile-img" src="images/profile.png">
                 <p class="nickName">${user.nickName}</p>
                 <p class="last-message">I want to go home...</p>
@@ -80,23 +104,25 @@ async function loadChat(recipientId)
     const response = await fetch(`/messages/${nickName}/${recipientId}`);
     const chatMessages = await response.json();
 
+    recipientName = recipientId;
     chatHistoryBody.innerHTML = "";
 
     for (let message of chatMessages) {
         const senderId = message.senderId;
-        const recipient = message.recipient;
+        // const recipient = message.recipient;
 
         const receivedMessage = document.createElement("div");
         const messageContent = document.createElement("div");
 
-        if (senderId === nickName)
+        if (senderId !== nickName)
             receivedMessage.classList.add("message", "received");
         else
             receivedMessage.classList.add("message", "sent");
 
         messageContent.classList.add("message-content");
-        messageContent.innerText = message.content;
+        messageContent.innerHTML = message.content;
 
+        receivedMessage.appendChild(messageContent);
         chatHistoryBody.appendChild(receivedMessage);
     }
 }
@@ -120,11 +146,10 @@ function sendMessage(event)
 {
     const content = inputMessage.value.trim();
     const element = document.querySelector(".user-profile");
-    const recipientId = element.getAttribute("data-recipient");
 
     stompClient.send(
         "/app/chat",
         {},
-        JSON.stringify({senderId: nickName, recipientId, content})
+        JSON.stringify({senderId: nickName, recipientId: recipientName, content})
     );
 }

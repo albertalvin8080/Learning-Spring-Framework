@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String>
 {
-    @Query("db.chatmessage.find({chatId: ?0})")
+    @Query("db.chatMessage.find({chatId: ?0})")
     List<ChatMessage> findAllByChatId(String chatId);
 }
