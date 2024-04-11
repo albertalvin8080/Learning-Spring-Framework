@@ -39,7 +39,7 @@ function onJoin(event)
 function onConnect()
 {
     stompClient.subscribe(`/user/${nickName}/queue/messages`, onMessageReceived);
-    stompClient.subscribe(`/topic/public`, onTopicReceived);
+    // stompClient.subscribe(`/user/topic/public`, onTopicReceived);
 
     loadOnlineUsers().then();
 
@@ -50,10 +50,15 @@ function onConnect()
     );
 }
 
-function onTopicReceived(payload) {
+function onTopicReceived(payload)
+{
     const user = JSON.parse(payload.body);
 
-    if(user.status === "OFFLINE" || user.nickName === nickName) return;
+    if (user.nickName === nickName) return;
+
+    let listOfNickNames = [...document.querySelectorAll(".nickName")];
+    // checking if there's not already a user with this nickName
+    if (listOfNickNames.some(p => p.innerText === user.nickName)) return;
 
     const userDiv = document.createElement("div");
     userDiv.classList.add("user");
@@ -68,7 +73,8 @@ function onTopicReceived(payload) {
     usersContainer.appendChild(userDiv);
 }
 
-function onDisconnected(payload) {
+function onDisconnected(payload)
+{
     const disconnectedUser = JSON.parse(payload.body);
 }
 
@@ -83,7 +89,7 @@ async function loadOnlineUsers()
     const users = await response.json();
 
     for (let user of users) {
-        if(user.nickName === nickName) continue;
+        if (user.nickName === nickName) continue;
 
         const userDiv = document.createElement("div");
         userDiv.classList.add("user");
@@ -108,36 +114,34 @@ async function loadChat(recipientId)
     chatHistoryBody.innerHTML = "";
 
     for (let message of chatMessages) {
-        const senderId = message.senderId;
-        // const recipient = message.recipient;
-
-        const receivedMessage = document.createElement("div");
-        const messageContent = document.createElement("div");
-
-        if (senderId !== nickName)
-            receivedMessage.classList.add("message", "received");
-        else
-            receivedMessage.classList.add("message", "sent");
-
-        messageContent.classList.add("message-content");
-        messageContent.innerHTML = message.content;
-
-        receivedMessage.appendChild(messageContent);
-        chatHistoryBody.appendChild(receivedMessage);
+        appendMessage(message);
     }
+}
+
+function appendMessage(message)
+{
+    const senderId = message.senderId;
+    // const recipient = message.recipient;
+
+    const receivedMessage = document.createElement("div");
+    const messageContent = document.createElement("div");
+
+    if (senderId !== nickName)
+        receivedMessage.classList.add("message", "received");
+    else
+        receivedMessage.classList.add("message", "sent");
+
+    messageContent.classList.add("message-content");
+    messageContent.innerHTML = message.content;
+
+    receivedMessage.appendChild(messageContent);
+    chatHistoryBody.appendChild(receivedMessage);
 }
 
 function onMessageReceived(payload)
 {
-    const chatMessage = JSON.parse(payload.body);
-
-    const receivedMessage = document.createElement("div");
-    receivedMessage.classList.add("message", "received");
-    const messageContent = document.createElement("div");
-    messageContent.classList.add("message-content");
-    messageContent.innerText = chatMessage.content;
-
-    chatHistoryBody.appendChild(receivedMessage);
+    const message = JSON.parse(payload.body);
+    appendMessage(message);
 }
 
 btnSendMessage.addEventListener("click", sendMessage, true);
@@ -145,11 +149,14 @@ btnSendMessage.addEventListener("click", sendMessage, true);
 function sendMessage(event)
 {
     const content = inputMessage.value.trim();
-    const element = document.querySelector(".user-profile");
 
     stompClient.send(
         "/app/chat",
         {},
         JSON.stringify({senderId: nickName, recipientId: recipientName, content})
     );
+
+    inputMessage.value = "";
+    const message = {senderId: nickName, content};
+    appendMessage(message);
 }

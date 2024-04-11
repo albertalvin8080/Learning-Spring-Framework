@@ -21,7 +21,7 @@ public class UserController {
     private final MyUserService userService;
 
     @MessageMapping("/user.addUser")
-    @SendTo("/topic/public")
+    @SendTo("/user/topic/public")
     public User addUser(
             @Payload User user
     ) {
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @MessageMapping("/user.disconnectUser")
-    @SendTo("/topic/public")
+    @SendTo("/user/topic/public")
     public User disconnectUser(
             @Payload User user
     ) {
@@ -42,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok(userService.findOnlineUsers());
     }
 
-    @ResponseBody
-    @GetMapping("/save")
-    public void save() {
-        userService.save(User.builder().nickName("Pedro Bial").status(Status.ONLINE).build());
-    }
+//    @ResponseBody
+//    @GetMapping("/save")
+//    public void save() {
+//        userService.save(User.builder().nickName("Pedro Bial").status(Status.ONLINE).build());
+//    }
 }
