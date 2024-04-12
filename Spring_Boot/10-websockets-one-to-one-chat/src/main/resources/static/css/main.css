@@ -50,6 +50,7 @@ body {
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    position: relative;
 }
 
 .user:hover {
@@ -59,7 +60,7 @@ body {
 .user-profile {
     gap: 7px 15px;
     display: grid;
-    grid-template-areas: "profile-img nickName" "profile-img status";
+    grid-template-areas: "profile-img nickName" "profile-img last-message";
     align-items: center;
 }
 
@@ -68,10 +69,24 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.last-message {
+    grid-area: last-message;
+}
+
 .status {
     grid-area: status;
     font-style: italic;
-    color: #6b6b6b;
+    right: 5%;
+    position: absolute;
+    /*color: #6b6b6b;*/
+}
+
+.OFFLINE {
+    color: red; !important;
+}
+
+.ONLINE {
+    color: lime; !important;
 }
 
 .profile-img {
@@ -202,7 +217,29 @@ body {
 div.current-user {
     gap: 7px 15px;
     display: grid;
+    grid-template-areas: "user-details logOut";
+    align-items: center;
+    justify-content: space-around;
+}
+
+div.user-details {
+    gap: 7px 15px;
+    display: grid;
     grid-template-areas: "profile-img nickName";
     align-items: center;
     justify-content: center;
+}
+
+#logOut {
+    grid-area: logOut;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #3e8e41;
+        cursor: pointer;
+    }
 }

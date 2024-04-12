@@ -34,4 +34,11 @@ public class ChatMessageService {
                 .map(repository::findAllByChatId)
                 .orElse(new ArrayList<>());
     }
+
+    public String findLastMessage(String senderId, String recipientId) {
+        final List<ChatMessage> lastMessage = repository
+                .findLastMessage(senderId, recipientId);
+
+        return lastMessage.isEmpty() ? "NO MESSAGES" : lastMessage.get(0).getContent();
+    }
 }

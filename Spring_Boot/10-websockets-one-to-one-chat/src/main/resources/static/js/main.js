@@ -4,6 +4,7 @@ const formJoin = document.querySelector("#joinForm");
 const btnJoin = document.querySelector("#join");
 const inputUserName = document.querySelector("#username");
 const currentUser = document.querySelector(".current-user");
+const btnLogout = document.querySelector("#logOut");
 
 const usersContainer = document.querySelector(".users");
 
@@ -50,7 +51,7 @@ function onConnect()
     stompClient.subscribe(`/user/${nickName}/queue/messages`, onMessageReceived);
     stompClient.subscribe(`/user/topic/public`, onTopicReceived);
 
-    loadOnlineUsers().then();
+    loadAllUsers().then();
 
     stompClient.send(
         "/app/user.addUser",
@@ -59,7 +60,7 @@ function onConnect()
     );
 }
 
-function onTopicReceived(payload)
+async function onTopicReceived(payload)
 {
     const user = JSON.parse(payload.body);
 
@@ -67,25 +68,19 @@ function onTopicReceived(payload)
 
     let listOfNickNames = [...document.querySelectorAll(".nickName")];
     // checking if there's not already a user with this nickName
-    // .filter()
-    if (listOfNickNames.some(p => p.innerText === user.nickName)) return;
+    const filterElement = listOfNickNames.filter(p => p.innerText === user.nickName);
 
-    const userDiv = document.createElement("div");
-    userDiv.classList.add("user");
-    userDiv.innerHTML = `
-            <div class="user-profile">
-                <img class="profile-img" src="images/profile.png">
-                <p class="nickName">${user.nickName}</p>
-                <p class="status">${user.status}</p>
-            </div>
-        `;
-    userDiv.addEventListener("click", () => loadChat(user.nickName), true);
-    usersContainer.appendChild(userDiv);
-}
-
-function onDisconnected(payload)
-{
-    const disconnectedUser = JSON.parse(payload.body);
+    if (filterElement.length !== 0) {
+        const nickNameElement = filterElement[0];
+        const parent = nickNameElement.parentElement;
+        const statusElement = parent.querySelector(".status");
+        statusElement.innerText = user.status;
+        statusElement.classList.add(user.status === "ONLINE" ? "ONLINE" : "OFFLINE");
+        statusElement.classList.remove(user.status !== "ONLINE" ? "ONLINE" : "OFFLINE");
+    }
+    else {
+        await createNewUserDiv(user);
+    }
 }
 
 function onError()
@@ -93,25 +88,32 @@ function onError()
     console.log("Could not connect to socket.");
 }
 
-async function loadOnlineUsers()
-{
-    const response = await fetch("/all-users");
-    const users = await response.json();
+async function createNewUserDiv(user) {
+    const response = await fetch(`/last-message/${nickName}/${user.nickName}`);
+    const lastMessage = await response.text();
 
-    for (let user of users) {
-        if (user.nickName === nickName) continue;
-
-        const userDiv = document.createElement("div");
-        userDiv.classList.add("user");
-        userDiv.innerHTML = `
+    const userDiv = document.createElement("div");
+    userDiv.classList.add("user");
+    userDiv.innerHTML = `
             <div class="user-profile">
                 <img class="profile-img" src="images/profile.png">
                 <p class="nickName">${user.nickName}</p>
-                <p class="status">${user.status}</p>
+                <p class="status ${user.status}">${user.status}</p>
+                <p class="last-message">${lastMessage}</p>
             </div>
         `;
-        userDiv.addEventListener("click", () => loadChat(user.nickName), true);
-        usersContainer.appendChild(userDiv);
+    userDiv.addEventListener("click", () => loadChat(user.nickName), true);
+    usersContainer.appendChild(userDiv);
+}
+
+async function loadAllUsers()
+{
+    const users = await fetch("/all-users")
+        .then(resp => resp.json());
+
+    for (let user of users) {
+        if (user.nickName === nickName) continue;
+        await createNewUserDiv(user);
     }
 }
 
@@ -156,8 +158,12 @@ function appendMessage(message)
 function onMessageReceived(payload)
 {
     const message = JSON.parse(payload.body);
-    if (message.senderId === recipientName)
+    if (message.senderId === recipientName) {
         appendMessage(message);
+    }
+    const array = [...document.querySelectorAll(".nickName")]
+    const filterElement = array.filter(p => p.innerText === message.senderId)[0];
+    filterElement.parentElement.querySelector(".last-message").innerText = message.content;
 }
 
 btnSendMessage.addEventListener("click", sendMessage, true);
@@ -165,14 +171,28 @@ btnSendMessage.addEventListener("click", sendMessage, true);
 function sendMessage(event)
 {
     const content = inputMessage.value.trim();
+    inputMessage.value = "";
 
+    const message = {senderId: nickName, recipientId: recipientName, content};
     stompClient.send(
         "/app/chat",
         {},
-        JSON.stringify({senderId: nickName, recipientId: recipientName, content})
+        JSON.stringify(message)
     );
 
-    inputMessage.value = "";
-    const message = {senderId: nickName, content};
     appendMessage(message);
+    const array = [...document.querySelectorAll(".nickName")]
+    const filterElement = array.filter(p => p.innerText === recipientName)[0];
+    filterElement.parentElement.querySelector(".last-message").innerText = message.content;
+}
+
+btnLogout.addEventListener("click", onLogout, true);
+
+function onLogout()
+{
+    stompClient.send("/app/user.disconnectUser",
+        {},
+        JSON.stringify({nickName: nickName, fullName: "EMPTY", status: "OFFLINE"})
+    );
+    window.location.reload();
 }

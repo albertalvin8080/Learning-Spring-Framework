@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -24,6 +25,7 @@ public class ChatMessageController {
     public void processChatMessage(
             @Payload ChatMessage chatMessage
     ) {
+        chatMessage.setInstant(Instant.now());
         final ChatMessage savedMessage =
                 chatMessageService.save(chatMessage);
 
