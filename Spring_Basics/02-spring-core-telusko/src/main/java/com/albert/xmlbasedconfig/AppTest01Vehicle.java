@@ -6,7 +6,7 @@ import com.albert.xmlbasedconfig.model.vehicle.Car;
 import com.albert.xmlbasedconfig.model.vehicle.Vehicle;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class App
+public class AppTest01Vehicle
 {
     public static void main( String[] args )
     {

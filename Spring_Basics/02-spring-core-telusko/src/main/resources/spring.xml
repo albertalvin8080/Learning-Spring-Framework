@@ -4,12 +4,27 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- used for annotation based configuration -->
+    <!-- Used for annotation based configuration. You can use annotations and xml at the same time (not recommended) -->
     <context:component-scan base-package="com.albert.xmlbasedconfig"/>
 
-    <bean id="car" class="com.albert.xmlbasedconfig.model.vehicle.Car"/>
-    <bean id="tyre" class="com.albert.xmlbasedconfig.model.tyre.Tyre">
-        <property name="brand" value="Chinese"/>
+    <bean id="car" class="com.albert.xmlbasedconfig.model.vehicle.Car">
+        <constructor-arg name="tyreParameter" ref="tyre"/>
     </bean>
 
+    <bean id="tyre" class="com.albert.xmlbasedconfig.model.tyre.Tyre">
+        <!-- this one injects through the setter() -->
+<!--        <property name="brand" value="Chinese"/>-->
+        <!-- this one injects through the constructor -->
+        <constructor-arg name="brand" value="Vietnamese"/>
+    </bean>
+
+    <bean name="computer" class="com.albert.xmlbasedconfig.model.computer.Computer">
+        <!-- the order of the parameters matters -->
+        <constructor-arg name="name" value="Dell-Internal"/>
+        <constructor-arg name="cpu" ref="cpu"/>
+    </bean>
+
+    <bean name="cpu" class="com.albert.xmlbasedconfig.model.cpu.SnapDragon">
+        <constructor-arg name="name" value="SnapDragon 1812.21"/>
+    </bean>
 </beans>
