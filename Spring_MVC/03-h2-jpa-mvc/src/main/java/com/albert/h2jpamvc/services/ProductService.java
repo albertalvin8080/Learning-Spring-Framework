@@ -16,4 +16,12 @@ public class ProductService {
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+
+    public void deleteById(int id) {
+        productRepository.deleteById(id);
+    }
+
+    public Product findById(int id) {
+        return productRepository.findById(id).get();
+    }
 }
