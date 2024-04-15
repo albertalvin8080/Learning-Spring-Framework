@@ -6,34 +6,30 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <title>H2 database testing</title>
-    <style>
-        label {
-            display: block;
-        }
-    </style>
 </head>
 <body>
 
-<form method="post" action="${pageContext.request.contextPath}/product/update">
+<form:form method="post" action="${pageContext.request.contextPath}/product/update" modelAttribute="product">
     <div>
-        <label for="id">Id</label>
-        <input type="number" name="id" id="id" value="${product.getId()}"/>
+        <form:label path="id">Id</form:label><br>
+        <form:input path="id" disabled="false"/>
     </div>
     <div>
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" value="${product.getName()}"/>
+        <form:label path="name">Name</form:label><br>
+        <form:input path="name"/>
     </div>
     <div>
-        <label for="price">Price</label>
-        <input type="number" name="price" id="price" value="${product.getPrice()}"/>
+        <form:label path="price">Price</form:label><br>
+        <form:input path="price"/>
     </div>
     <div>
-        <input type="submit" value="Submit">
+        <form:button>Submit</form:button>
     </div>
-</form>
+</form:form>
 
 </body>
 </html>
