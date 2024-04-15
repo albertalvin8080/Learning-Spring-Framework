@@ -13,6 +13,10 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    public void save(Product product) {
+        productRepository.save(product);
+    }
+
     public List<Product> findAll() {
         return productRepository.findAll();
     }

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.albert</groupId>
-    <artifactId>h2-jpa-mvc</artifactId>
+    <artifactId>crud-h2-mvc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>03-h2-jpa-mvc</name>
-    <description>03-h2-jpa-mvc</description>
+    <name>03-crud-h2-mvc</name>
+    <description>03-crud-h2-mvc</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -61,6 +61,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>annotationProcessor</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
