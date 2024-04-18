@@ -8,13 +8,15 @@
         <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.example</groupId>
+    <groupId>com.albert</groupId>
     <artifactId>spring-webflux-essentials</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>07-spring-webflux-essentials</name>
     <description>07-spring-webflux-essentials</description>
     <properties>
         <java.version>17</java.version>
+        <maven.compile.target>17</maven.compile.target>
+        <maven.compile.source>17</maven.compile.source>
     </properties>
 
     <dependencies>
@@ -83,6 +85,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine>-XX:+AllowRedefinitionToAddDeleteMethods</argLine>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
