@@ -10,8 +10,9 @@ import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/product")
-public class ProductController {
-
+public class ProductController
+{
+    // Executes everytime before each Mapping
     @ModelAttribute
     public void keyword(Model model) {
         model.addAttribute("keyword", "Gena");
