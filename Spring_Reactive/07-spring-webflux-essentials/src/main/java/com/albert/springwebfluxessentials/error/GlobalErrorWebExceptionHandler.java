@@ -27,7 +27,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
             ServerCodecConfigurer serverCodecConfigurer
     ) {
         super(errorAttributes, resources, applicationContext);
-        setMessageWriters(serverCodecConfigurer.getWriters());
+        super.setMessageWriters(serverCodecConfigurer.getWriters());
     }
 
     @Override
@@ -42,11 +42,11 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         // Not necessary since there's already a default implementation of 'isTraceEnabled()'
 //        final String query = request.uri().getQuery();
 
-        final ErrorAttributeOptions errorAttributeOptions = isTraceEnabled(request) ?
+        final ErrorAttributeOptions errorAttributeOptions = super.isTraceEnabled(request) ?
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) :
                 ErrorAttributeOptions.defaults();
 
-        final Map<String, Object> errorAttributesMap = getErrorAttributes(request, errorAttributeOptions);
+        final Map<String, Object> errorAttributesMap = super.getErrorAttributes(request, errorAttributeOptions);
         int status = (int) Optional.ofNullable(errorAttributesMap.get("status")).orElse(500);
 
         return ServerResponse.status(status)

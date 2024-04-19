@@ -9,6 +9,6 @@ public class WebPropertiesConfig
 {
     @Bean
     public WebProperties.Resources resources() {
-        return new WebProperties.Resources(); // Defaults.
+        return new WebProperties.Resources();
     }
 }
