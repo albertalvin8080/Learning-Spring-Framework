@@ -39,12 +39,15 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     private Mono<ServerResponse> formatErrorResponse(ServerRequest request) {
+        // Not necessary since there's already a default implementation of 'isTraceEnabled()'
+//        final String query = request.uri().getQuery();
+
         final ErrorAttributeOptions errorAttributeOptions = isTraceEnabled(request) ?
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) :
                 ErrorAttributeOptions.defaults();
 
         final Map<String, Object> errorAttributesMap = getErrorAttributes(request, errorAttributeOptions);
-        final int status = (int) Optional.ofNullable(errorAttributesMap.get("status")).orElse(500);
+        int status = (int) Optional.ofNullable(errorAttributesMap.get("status")).orElse(500);
 
         return ServerResponse.status(status)
                 .contentType(MediaType.APPLICATION_JSON)
