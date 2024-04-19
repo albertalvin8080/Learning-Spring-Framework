@@ -20,8 +20,12 @@ public class ProductService {
 
     public Mono<Product> findById(Long id) {
         return productRepository.findById(id)
-                .switchIfEmpty(Mono.error(
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found."))
-                );
+                .switchIfEmpty(getNotFoundStatusException());
+    }
+
+    private <T> Mono<T> getNotFoundStatusException() {
+        return Mono.error(
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found.")
+        );
     }
 }
