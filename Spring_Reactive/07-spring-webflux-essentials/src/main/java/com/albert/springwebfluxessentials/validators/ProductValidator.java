@@ -28,7 +28,7 @@ public class ProductValidator
                     .getAllErrors()
                     .stream()
                     .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.joining("; "));
 
             return Mono.error(new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
