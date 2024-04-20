@@ -23,6 +23,8 @@ public class ProductService {
                 .switchIfEmpty(generateNotFoundStatusException());
     }
 
+    // The Generic is in the return type, thus I don't need to specify it at the method call.
+    // See your notebook for more info.
     private <T> Mono<T> generateNotFoundStatusException() {
         return Mono.error(
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found.")
@@ -34,8 +36,8 @@ public class ProductService {
     }
 
     public Mono<Void> update(Product product) {
-        return findById(product.getId()) // Checks if really exists.
-                .then(Mono.just(product))
+        return findById(product.getId())  // Checks if really exists.
+                .then(Mono.just(product)) // Ignores the existing product.
                 .flatMap(productRepository::save)
                 .then();
     }

@@ -38,10 +38,25 @@ class ProductServiceTest
 
     @BeforeEach
     public void setUp() {
+        // findAll()
         BDDMockito.when(productRepository.findAll())
                 .thenReturn(Flux.just(getValidProduct()));
+
+        // findById()
         BDDMockito.when(productRepository.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Mono.just(getValidProduct()));
+
+        // save()
+        BDDMockito.when(productRepository.save(getProductToBeSaved()))
+                .thenReturn(Mono.just(getValidProduct()));
+
+        // update()
+        BDDMockito.when(productRepository.save(getValidProduct()))
+                .thenReturn(Mono.just(getUpdatedProduct()));
+
+        // delete()
+        BDDMockito.when(productRepository.delete(getValidProduct()))
+                .thenReturn(Mono.empty());
     }
 
     @Test
@@ -77,6 +92,62 @@ class ProductServiceTest
                     return throwable instanceof ResponseStatusException x && x.getStatusCode() == HttpStatus.NOT_FOUND;
                 })
 //                .expectError(ResponseStatusException.class)
+                .verify();
+    }
+
+    @Test
+    @DisplayName("save returns Mono<Product> when successful.")
+    public void save_ReturnsMonoOfProduct_WhenSuccessful() {
+        StepVerifier
+                .create(productService.save(getProductToBeSaved()))
+                .expectSubscription()
+                .expectNext(getValidProduct())
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("update returns Mono<Void> when successful.")
+    public void update_ReturnsMonoOfVoid_WhenSuccessful() {
+        StepVerifier
+                .create(productService.update(getValidProduct()))
+                .expectSubscription()
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("update returns Mono.error() of ResponseStatusException when no products are found.")
+    public void update_ReturnsMonoErrorOfResponseStatusException_WhenNoProductsAreFound() {
+        BDDMockito.when(productRepository.findById(ArgumentMatchers.anyLong()))
+                        .thenReturn(Mono.empty());
+
+        StepVerifier
+                .create(productService.update(getValidProduct()))
+                .expectSubscription()
+                .expectErrorMatches(throwable ->
+                    throwable instanceof ResponseStatusException x && x.getStatusCode() == HttpStatus.NOT_FOUND)
+                .verify();
+    }
+
+    @Test
+    @DisplayName("delete returns Mono<Void> when successful.")
+    public void delete_ReturnsMonoOfVoid_WhenSuccessful() {
+        StepVerifier
+                .create(productService.delete(getValidProduct().getId()))
+                .expectSubscription()
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("delete returns Mono.error() of ResponseStatusException when no products are found.")
+    public void delete_ReturnsMonoErrorOfResponseStatusException_WhenNoProductsAreFound() {
+        BDDMockito.when(productRepository.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Mono.empty());
+
+        StepVerifier
+                .create(productService.delete(getValidProduct().getId()))
+                .expectSubscription()
+                .expectErrorMatches(throwable ->
+                        throwable instanceof ResponseStatusException x && x.getStatusCode() == HttpStatus.NOT_FOUND)
                 .verify();
     }
 }
