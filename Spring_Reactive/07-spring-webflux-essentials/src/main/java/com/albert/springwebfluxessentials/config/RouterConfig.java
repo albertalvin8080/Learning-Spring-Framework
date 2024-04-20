@@ -12,26 +12,27 @@ public class RouterConfig
 {
     /*
      * It doesn't seem wise to have this many beans inside the Spring Context.
-     * You could simply inject the 'ProductService' and 'ProductValidator' here
-     * and use lambdas to replace these handlers, or just declare functions with
-     * the same signature in the current class.
+     * You can simply declare a single 'ProductHandler' with the same method
+     * signatures and use method reference to map the endpoints inside the Router.
      * */
-    private final FindAllHandler findAllHandler;
-    private final FindByIdHandler findByIdHandler;
-    private final SaveHandler saveHandler;
-    private final UpdateHandler updateHandler;
-    private final DeleteHandler deleteHandler;
+//    private final FindAllHandler findAllHandler;
+//    private final FindByIdHandler findByIdHandler;
+//    private final SaveHandler saveHandler;
+//    private final UpdateHandler updateHandler;
+//    private final DeleteHandler deleteHandler;
+
+    private final ProductHandler productHandler;
 
     @Bean
     public RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions.nest(
                 RequestPredicates.path("/product"),
                 RouterFunctions.route()
-                        .GET("/all", findAllHandler)
-                        .GET("/{id}", findByIdHandler)
-                        .POST("/save", saveHandler)
-                        .PUT("/{id}", updateHandler)
-                        .DELETE("/{id}", deleteHandler)
+                        .GET("/all", productHandler::findAll)
+                        .GET("/{id}", productHandler::findById)
+                        .POST("/save", productHandler::save)
+                        .PUT("/{id}", productHandler::update)
+                        .DELETE("/{id}", productHandler::delete)
                         .build()
         );
     }

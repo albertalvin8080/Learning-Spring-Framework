@@ -1,6 +1,7 @@
-package com.albert.springwebfluxessentials.services;
+package com.albert.springwebfluxessentials.unit_tests.services;
 
 import com.albert.springwebfluxessentials.repositories.ProductRepository;
+import com.albert.springwebfluxessentials.services.ProductService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,13 +19,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static com.albert.springwebfluxessentials.util.TestProductGenerator.*;
 
 @ExtendWith(SpringExtension.class)
-class ProductServiceTest
+class ProductServiceUnitTest
 {
     @InjectMocks
     private ProductService productService;
