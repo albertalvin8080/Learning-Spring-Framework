@@ -1,5 +1,6 @@
 package com.albert.springwebfluxessentials.unit_tests.services;
 
+import com.albert.springwebfluxessentials.model.Product;
 import com.albert.springwebfluxessentials.repositories.ProductRepository;
 import com.albert.springwebfluxessentials.services.ProductService;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,10 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,6 +63,8 @@ class ProductServiceUnitTest
                 .expectSubscription()
                 .expectNext(getValidProduct())
                 .verifyComplete();
+
+        BDDMockito.verify(productRepository, Mockito.times(1)).findAll();
     }
 
     @Test
@@ -75,6 +75,9 @@ class ProductServiceUnitTest
                 .expectSubscription()
                 .expectNext(getValidProduct())
                 .verifyComplete();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
     }
 
     @Test
@@ -91,6 +94,9 @@ class ProductServiceUnitTest
                 })
 //                .expectError(ResponseStatusException.class)
                 .verify();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
     }
 
     @Test
@@ -101,6 +107,9 @@ class ProductServiceUnitTest
                 .expectSubscription()
                 .expectNext(getValidProduct())
                 .verifyComplete();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .save(ArgumentMatchers.any(Product.class));
     }
 
     @Test
@@ -110,6 +119,11 @@ class ProductServiceUnitTest
                 .create(productService.update(getValidProduct()))
                 .expectSubscription()
                 .verifyComplete();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .save(ArgumentMatchers.any(Product.class));
     }
 
     @Test
@@ -124,6 +138,9 @@ class ProductServiceUnitTest
                 .expectErrorMatches(throwable ->
                     throwable instanceof ResponseStatusException x && x.getStatusCode() == HttpStatus.NOT_FOUND)
                 .verify();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
     }
 
     @Test
@@ -133,6 +150,11 @@ class ProductServiceUnitTest
                 .create(productService.delete(getValidProduct().getId()))
                 .expectSubscription()
                 .verifyComplete();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .delete(ArgumentMatchers.any(Product.class));
     }
 
     @Test
@@ -147,5 +169,8 @@ class ProductServiceUnitTest
                 .expectErrorMatches(throwable ->
                         throwable instanceof ResponseStatusException x && x.getStatusCode() == HttpStatus.NOT_FOUND)
                 .verify();
+
+        BDDMockito.verify(productRepository, BDDMockito.times(1))
+                .findById(ArgumentMatchers.anyLong());
     }
 }
