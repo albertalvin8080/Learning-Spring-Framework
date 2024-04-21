@@ -3,7 +3,7 @@
 
 CREATE SCHEMA IF NOT EXISTS products;
 
-DROP TABLE IF EXISTS products.product;
+-- DROP TABLE IF EXISTS products.product;
 
 CREATE TABLE IF NOT EXISTS products.product (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,

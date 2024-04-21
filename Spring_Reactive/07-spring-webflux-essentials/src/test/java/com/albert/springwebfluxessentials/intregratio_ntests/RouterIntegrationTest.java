@@ -3,20 +3,28 @@ package com.albert.springwebfluxessentials.intregratio_ntests;
 import com.albert.springwebfluxessentials.model.Product;
 import com.albert.springwebfluxessentials.repositories.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import reactor.blockhound.BlockHound;
+import reactor.test.StepVerifier;
 
 import static com.albert.springwebfluxessentials.util.TestProductGenerator.*;
 
+/*
+ * It's actually better not to drop the entire table for each test in this case, otherwise
+ * it would lead to concurrency issues, like a test dropping the database which the previous
+ * test was using.
+ * */
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class RouterIntegrationTest
 {
     @Autowired
@@ -29,23 +37,26 @@ public class RouterIntegrationTest
     private static final Product productToBeSaved = getProductToBeSaved();
     private static final Product updatedProduct = getUpdatedProduct();
 
+    @BeforeAll
+    public static void setUpBlockHound() {
+        BlockHound.install();
+    }
+
     @Test
     @DisplayName("findAll returns Flux<Product> when successful.")
     public void findAll_ReturnsFluxOfProduct_WhenSuccessful() {
         final Product savedProduct = repository.save(productToBeSaved).block();
 
-        webTestClient.get()
+        final FluxExchangeResult<Product> result = webTestClient.get()
                 .uri("/product/all")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Product.class)
-                // With this is possible to see if the returned prices are different, like 400.00 and 400
-                // Also, the equals and hashcode for Product were changed to only include de id property.
-                .value(products -> {
-                    log.info(products.get(0).toString());
-                    log.info(savedProduct.toString());
-                })
-                .contains(savedProduct);
+                .returnResult(Product.class);
+
+        StepVerifier.create(result.getResponseBody())
+                .expectSubscription()
+                .expectNext(savedProduct)
+                .verifyComplete();
     }
 
     @Test
@@ -53,13 +64,19 @@ public class RouterIntegrationTest
     public void findById_ReturnsMonoOfProduct_WhenSuccessful() {
         final Product savedProduct = repository.save(productToBeSaved).block();
 
-        webTestClient
+        final FluxExchangeResult<Product> result = webTestClient
                 .get()
                 .uri("/product/{id}", savedProduct.getId())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$..name", savedProduct.getName());
+//                .expectBody()
+//                .jsonPath("$..name", savedProduct.getName());
+                .returnResult(Product.class);
+
+        StepVerifier.create(result.getResponseBody())
+                .expectSubscription()
+                .expectNext(savedProduct)
+                .verifyComplete();
     }
 
     @Test
@@ -77,14 +94,20 @@ public class RouterIntegrationTest
     @Test
     @DisplayName("save returns Mono<Product> when successful.")
     public void save_ReturnsMonoOfProduct_WhenSuccessful() {
-        webTestClient.post()
+        final FluxExchangeResult<Product> result = webTestClient.post()
                 .uri("/product/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(productToBeSaved))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBodyList(Product.class)
-                .hasSize(1);
+//                .expectBodyList(Product.class)
+//                .hasSize(1);
+                .returnResult(Product.class);
+
+        StepVerifier.create(result.getResponseBody())
+                .expectSubscription()
+                .expectNextMatches(product -> product.getId() != null)
+                .verifyComplete();
     }
 
     @Test
@@ -119,5 +142,99 @@ public class RouterIntegrationTest
                 });
     }
 
-    
+    @Test
+    @DisplayName("update returns HttpStatus.NOT_FOUND when successful.")
+    public void update_ReturnsHttpStatusNoContent_WhenSuccessful() {
+        final Product savedProduct = repository.save(productToBeSaved).block();
+
+        webTestClient.put()
+                .uri("/product/{id}", savedProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(updatedProduct))
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
+    @Test
+    @DisplayName("update returns HttpStatus.BAD_REQUEST when the product has no name.")
+    public void update_ReturnsHttpStatusBadRequest_WhenProductHasNoName() {
+        final Product savedProduct = repository.save(productToBeSaved).block();
+
+        webTestClient.put()
+                .uri("/product/{id}", savedProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.
+                        fromValue(updatedProduct.withName(""))
+                )
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    @DisplayName("update returns HttpStatus.BAD_REQUEST when the product has no price.")
+    public void update_ReturnsHttpStatusBadRequest_WhenProductHasNoPrice() {
+        final Product savedProduct = repository.save(productToBeSaved).block();
+
+        webTestClient.put()
+                .uri("/product/{id}", savedProduct.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.
+                        fromValue(updatedProduct.withPrice(null))
+                )
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    @DisplayName("update returns HttpStatus.NOT_FOUND when no products were found.")
+    public void update_ReturnsHttpStatusNotFound_WhenProductNoProductsWereFound() {
+        webTestClient.put()
+                .uri("/product/{id}", 101)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.
+                        fromValue(updatedProduct)
+                )
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    @DisplayName("delete returns HttpStatus.NO_CONTENT whe successful.")
+    public void delete_ReturnsHttpStatusNoContent_WhenSuccessful() {
+        final Product savedProduct = repository.save(productToBeSaved).block();
+
+        webTestClient.delete()
+                .uri("/product/{id}", savedProduct.getId())
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
+    @Test
+    @DisplayName("delete returns HttpStatus.NOT_FOUND whe no products were found.")
+    public void delete_ReturnsHttpStatusNotFound_WhenNoProductsWereFound() {
+        webTestClient.delete()
+                .uri("/product/{id}", 101)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    // Prototype
+//    @Test
+//    @DisplayName("findAll returns Flux<Product> when successful.")
+//    public void findAll_ReturnsFluxOfProduct_WhenSuccessful() {
+//        final Product savedProduct = repository.save(productToBeSaved).block();
+//
+//        webTestClient.get()
+//                .uri("/product/all")
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBodyList(Product.class)
+//                // With this is possible to see if the returned prices are different, like 400.00 and 400
+//                // Also, the equals and hashcode for Product were changed to only include de id property.
+//                .value(products -> {
+//                    log.info(products.get(0).toString());
+//                    log.info(savedProduct.toString());
+//                })
+//                .returnResult();
+//    }
 }
