@@ -10,14 +10,14 @@ public class TestProductGenerator
         return Product.builder()
                 .id(100L)
                 .name("Television")
-                .price(BigDecimal.valueOf(400))
+                .price(BigDecimal.valueOf(400.00))
                 .build();
     }
 
     public static Product getProductToBeSaved() {
         return Product.builder()
                 .name("Television")
-                .price(BigDecimal.valueOf(400))
+                .price(BigDecimal.valueOf(400.00))
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class TestProductGenerator
         return Product.builder()
                 .id(100L)
                 .name("Inflationary Television")
-                .price(BigDecimal.valueOf(550))
+                .price(BigDecimal.valueOf(550.00))
                 .build();
     }
 }

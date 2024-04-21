@@ -1,4 +1,4 @@
-package com.albert.springwebfluxessentials.unit_tests.services;
+package com.albert.springwebfluxessentials.unit_tests;
 
 import com.albert.springwebfluxessentials.model.Product;
 import com.albert.springwebfluxessentials.repositories.ProductRepository;

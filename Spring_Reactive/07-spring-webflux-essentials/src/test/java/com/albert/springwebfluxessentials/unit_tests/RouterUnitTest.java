@@ -1,4 +1,4 @@
-package com.albert.springwebfluxessentials.unit_tests.routers;
+package com.albert.springwebfluxessentials.unit_tests;
 
 import com.albert.springwebfluxessentials.config.RouterConfig;
 import com.albert.springwebfluxessentials.config.WebPropertiesConfig;
