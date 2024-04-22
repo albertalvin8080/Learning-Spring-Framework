@@ -15,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"name", "price"})
 @AllArgsConstructor
-@Table(name = "product", schema = "products")
+@Table(name = "product", schema = "webflux")
 public class Product {
     @Id
     private Long id;
