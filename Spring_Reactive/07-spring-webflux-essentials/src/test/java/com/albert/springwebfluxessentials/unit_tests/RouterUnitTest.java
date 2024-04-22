@@ -7,6 +7,8 @@ import com.albert.springwebfluxessentials.handlers.ProductHandler;
 import com.albert.springwebfluxessentials.model.Product;
 import com.albert.springwebfluxessentials.services.ProductService;
 import com.albert.springwebfluxessentials.validators.ProductValidator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.cbor.Jackson2CborDecoder;
+import org.springframework.http.codec.json.Jackson2CodecSupport;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2SmileEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -29,6 +37,9 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.blockhound.BlockHound;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.util.List;
 
 import static com.albert.springwebfluxessentials.util.TestProductGenerator.*;
 
@@ -69,6 +80,9 @@ public class RouterUnitTest
         // save()
         Mockito.when(productService.save(productToBeSaved))
                 .thenReturn(Mono.just(validProduct));
+        // saveAll()
+        Mockito.when(productService.saveAll(List.of(productToBeSaved, productToBeSaved)))
+                        .thenReturn(Mono.just(List.of(validProduct, validProduct)));
         // update()
         Mockito.when(productService.update(validProduct))
                 .thenReturn(Mono.empty());
@@ -140,6 +154,26 @@ public class RouterUnitTest
         BDDMockito.verify(productService, BDDMockito.times(1))
                 .save(ArgumentMatchers.any(Product.class));
     }
+
+    /* Needs the default Spring Beans for deserializing List<>. See the Integration Test. */
+//    @Test
+//    @DisplayName("saveAll returns Mono<List<Product>> when successful.")
+//    public void saveAll_ReturnsMonoOfListOfProduct_WhenSuccessful() {
+//        final FluxExchangeResult<List<Product>> result = webTestClient.post()
+//                .uri("/product-save-all")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(BodyInserters.fromValue(List.of(productToBeSaved, productToBeSaved)))
+//                .exchange()
+//                .returnResult(new ParameterizedTypeReference<List<Product>>(){});
+//
+//        final Flux<Product> flux = result.getResponseBody().flatMap(Flux::fromIterable);
+//
+//        StepVerifier.create(flux)
+//                .expectSubscription()
+//                .expectNextMatches(product -> product.getId() != null)
+//                .expectNextMatches(product -> product.getId() != null)
+//                .verifyComplete();
+//    }
 
     @Test
     @DisplayName("update returns HttpStatus.NO_CONTENT when successful.")

@@ -4,12 +4,16 @@ import com.albert.springwebfluxessentials.model.Product;
 import com.albert.springwebfluxessentials.services.ProductService;
 import com.albert.springwebfluxessentials.validators.ProductValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -36,10 +40,10 @@ public class ProductHandler
         return request.bodyToMono(Product.class)
                 .flatMap(productValidator::validate)
                 .flatMap(productService::save)
-                .flatMap(product ->
-                        ServerResponse.status(HttpStatus.CREATED)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body(Mono.just(product), Product.class)
+                .flatMap(product -> ServerResponse
+                        .status(HttpStatus.CREATED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(product), Product.class)
                 );
     }
 
@@ -64,4 +68,16 @@ public class ProductHandler
                         .build()
                 );
     }
+
+    public Mono<ServerResponse> saveAll(ServerRequest request) {
+        return request.bodyToMono(new ParameterizedTypeReference<List<Product>>(){})
+                .flatMap(productValidator::validateMany)
+                .flatMap(productService::saveAll)
+                .flatMap(products -> ServerResponse
+                        .status(HttpStatus.CREATED)
+                        .contentType(MediaType.TEXT_EVENT_STREAM)
+                        .body(BodyInserters.fromValue(products))
+                );
+    }
+
 }

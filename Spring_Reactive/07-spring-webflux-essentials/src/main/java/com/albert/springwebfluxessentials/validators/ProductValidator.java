@@ -9,8 +9,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,5 +39,11 @@ public class ProductValidator
         }
 
         return Mono.just(product);
+    }
+
+    public Mono<List<Product>> validateMany(Iterable<Product> products) {
+        return Flux.fromIterable(products)
+                .flatMap(this::validate)
+                .collectList();
     }
 }

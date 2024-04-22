@@ -8,17 +8,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.blockhound.BlockHound;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+
+import java.util.List;
 
 import static com.albert.springwebfluxessentials.util.TestProductGenerator.*;
 
 /*
- * It's actually better not to drop the entire table for each test in this case, otherwise
+ * It's actually better not to drop the entire database for each test in this case, otherwise
  * it would lead to concurrency issues, like a test dropping the database which the previous
  * test was using.
  * */
@@ -143,6 +147,40 @@ public class RouterIntegrationTest
     }
 
     @Test
+    @DisplayName("saveAll returns Mono<List<Product>> when successful.")
+    public void saveAll_ReturnsMonoOfListOfProduct_WhenSuccessful() {
+        final FluxExchangeResult<List<Product>> result = webTestClient.post()
+                .uri("/product/save-all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(List.of(productToBeSaved, productToBeSaved)))
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(new ParameterizedTypeReference<List<Product>>(){});
+
+        // Extracting Flux<List<Product>> to Flux<Product>
+        final Flux<Product> productFlux = result.getResponseBody().flatMap(Flux::fromIterable);
+
+        StepVerifier.create(productFlux)
+                .expectSubscription()
+                .expectNextMatches(product -> product.getId() != null)
+                .expectNextMatches(product -> product.getId() != null)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("saveAll returns HttpStatus.BAD_REQUEST when one of the products is invalid.")
+    public void saveAll_ReturnsHttpStatusBadRequest_WhenOneOfProductsIsInvalid() {
+        webTestClient.post()
+                .uri("/product/save-all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(List.of(productToBeSaved, productToBeSaved.withName(""))))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.status").isEqualTo(400);
+    }
+
+    @Test
     @DisplayName("update returns HttpStatus.NOT_FOUND when successful.")
     public void update_ReturnsHttpStatusNoContent_WhenSuccessful() {
         final Product savedProduct = repository.save(productToBeSaved).block();
@@ -217,7 +255,7 @@ public class RouterIntegrationTest
                 .exchange()
                 .expectStatus().isNotFound();
     }
-
+/**/
     // Prototype
 //    @Test
 //    @DisplayName("findAll returns Flux<Product> when successful.")

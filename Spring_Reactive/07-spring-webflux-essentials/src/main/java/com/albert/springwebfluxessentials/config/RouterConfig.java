@@ -31,6 +31,7 @@ public class RouterConfig
                         .GET("/all", productHandler::findAll)
                         .GET("/{id}", productHandler::findById)
                         .POST("/save", productHandler::save)
+                        .POST("/save-all", productHandler::saveAll)
                         .PUT("/{id}", productHandler::update)
                         .DELETE("/{id}", productHandler::delete)
                         .build()

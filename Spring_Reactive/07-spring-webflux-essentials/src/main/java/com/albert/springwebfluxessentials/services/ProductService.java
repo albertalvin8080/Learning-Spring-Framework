@@ -5,19 +5,26 @@ import lombok.RequiredArgsConstructor;
 import com.albert.springwebfluxessentials.repositories.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class ProductService {
+public class ProductService
+{
     private final ProductRepository productRepository;
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Flux<Product> findAll() {
         return productRepository.findAll();
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Product> findById(Long id) {
         return productRepository.findById(id)
                 .switchIfEmpty(generateNotFoundStatusException());
@@ -31,10 +38,12 @@ public class ProductService {
         );
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Product> save(Product product) {
         return productRepository.save(product);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Void> update(Product product) {
         return findById(product.getId())  // Checks if really exists.
                 .then(Mono.just(product)) // Ignores the existing product.
@@ -42,8 +51,21 @@ public class ProductService {
                 .then();
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Void> delete(Long id) {
         return findById(id)
                 .flatMap(productRepository::delete);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Mono<List<Product>> saveAll(List<Product> products) {
+        return productRepository.saveAll(products)
+                .collectList();
+        /*
+         * this is the code used to force the commit when you don't have a @Transactional.
+         * It's necessary to block the operation so r2dbc have time to commit it.
+         */
+//        /*return*/ productRepository.saveAll(products).collectList().block();
+//        throw new RuntimeException();
     }
 }
