@@ -19,7 +19,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes
 
         if (error instanceof ResponseStatusException x) {
             errorAttributes.put("message", x.getMessage().replaceAll("\"", "'"));
-            errorAttributes.put("developerMessage", "Check the documentation");
+            errorAttributes.put("developerMessage", "Check the documentation.");
         }
 
         return errorAttributes;

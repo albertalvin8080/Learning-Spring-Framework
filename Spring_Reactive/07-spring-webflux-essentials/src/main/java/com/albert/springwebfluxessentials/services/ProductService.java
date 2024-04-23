@@ -3,6 +3,7 @@ package com.albert.springwebfluxessentials.services;
 import com.albert.springwebfluxessentials.model.Product;
 import lombok.RequiredArgsConstructor;
 import com.albert.springwebfluxessentials.repositories.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -12,7 +13,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService
@@ -40,25 +43,13 @@ public class ProductService
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Product> save(Product product) {
-        return productRepository.save(product);
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Mono<Void> update(Product product) {
-        return findById(product.getId())  // Checks if really exists.
-                .then(Mono.just(product)) // Ignores the existing product.
-                .flatMap(productRepository::save)
-                .then();
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Mono<Void> delete(Long id) {
-        return findById(id)
-                .flatMap(productRepository::delete);
+//        log.info("UNDEAD id: {}", product.getId());
+        return productRepository.save(product.withId(null));
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<List<Product>> saveAll(List<Product> products) {
+        products = products.stream().map(p -> p.withId(null)).collect(Collectors.toList());
         return productRepository.saveAll(products)
                 .collectList();
         /*
@@ -67,5 +58,21 @@ public class ProductService
          */
 //        /*return*/ productRepository.saveAll(products).collectList().block();
 //        throw new RuntimeException();
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Mono<Void> update(Product product) {
+//        log.info("UNDEAD id: {}", product.getId());
+        return findById(product.getId())  // Checks if really exists.
+                .then(Mono.just(product)) // Ignores the existing product.
+                .flatMap(productRepository::save)
+                .then();
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Mono<Void> delete(Long id) {
+//        log.info("UNDEAD id: {}", id);
+        return findById(id)
+                .flatMap(productRepository::delete);
     }
 }

@@ -13,7 +13,7 @@ VALUES ('Television', 500.00),
        ('Sofa', 200.00),
        ('Working PC', 1000.00);
 
-CREATE TABLE webflux.user
+CREATE TABLE webflux.appUser
 (
     id       SERIAL PRIMARY KEY,
     username VARCHAR(50)  NOT NULL UNIQUE,
@@ -21,7 +21,7 @@ CREATE TABLE webflux.user
     roles    VARCHAR(100)
 );
 
-INSERT INTO webflux.user
+INSERT INTO webflux.appUser
     (username, password, roles)
 VALUES ('albert', '{bcrypt}$2a$10$bkcVnzQRXX7ZqMJso9f5oOfEKTw4Ecus3h4NrXqxjh1PVFLAmtZbC', 'ROLE_USER,ROLE_ADMIN'),
        ('lucas', '{bcrypt}$2a$10$bkcVnzQRXX7ZqMJso9f5oOfEKTw4Ecus3h4NrXqxjh1PVFLAmtZbC', 'ROLE_USER');
