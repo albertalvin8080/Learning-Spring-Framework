@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 
 public interface AppUserRepository extends ReactiveCrudRepository<AppUser, Long>
 {
-//    @Query("")
+    @Query("SELECT webflux.appUser.* FROM webflux.appUser WHERE webflux.appUser.username = :username")
     Mono<AppUser> findByUsername(String username);
 }
