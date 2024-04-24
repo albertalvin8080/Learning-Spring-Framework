@@ -1,4 +1,4 @@
-package com.albert.springmicroservicesdevdojo.model;
+package com.albert.core.model;
 
 import jakarta.persistence.*;
 import lombok.*;

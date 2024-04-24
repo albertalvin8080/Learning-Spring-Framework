@@ -1,2 +1,2 @@
 # Description
-Simple repository created for learning more about Spring and Spring Boot.
+A repository designed to deepen understanding of Spring and Spring Boot frameworks.

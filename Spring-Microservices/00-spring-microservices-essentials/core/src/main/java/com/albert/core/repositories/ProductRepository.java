@@ -1,6 +1,6 @@
-package com.albert.springmicroservicesdevdojo.repository;
+package com.albert.core.repositories;
 
-import com.albert.springmicroservicesdevdojo.model.Product;
+import com.albert.core.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long>

@@ -1,7 +1,7 @@
-package com.albert.springmicroservicesdevdojo.endpoint.services;
+package com.albert.product.endpoint.services;
 
-import com.albert.springmicroservicesdevdojo.model.Product;
-import com.albert.springmicroservicesdevdojo.repository.ProductRepository;
+import com.albert.core.model.Product;
+import com.albert.core.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
