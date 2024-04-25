@@ -1,4 +1,4 @@
-package com.albert.productservice.dto;
+package com.albert.core.models.product;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -9,11 +9,16 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class ProductRequest
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Document(value = "product")
+public class Product
 {
+    @Id
+    @EqualsAndHashCode.Include
+    private String id;
     private String name;
     private BigDecimal price;
 }

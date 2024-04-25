@@ -1,6 +1,6 @@
 package com.albert.orderservice.controllers;
 
-import com.albert.orderservice.dto.OrderDto;
+import com.albert.core.dto.OrderDto;
 import com.albert.orderservice.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package com.albert.productservice;
 
-import com.albert.productservice.dto.ProductRequest;
-import com.albert.productservice.model.Product;
+import com.albert.core.dto.ProductRequestDto;
+import com.albert.core.models.product.Product;
 import com.albert.productservice.repositories.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,10 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static com.albert.productservice.util.ProductUtil.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.albert.productservice.util.ProductUtil.getProductRequest;
+import static com.albert.productservice.util.ProductUtil.getProductToSave;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @SpringBootTest
@@ -48,7 +50,7 @@ public class ControllerIntegrationTest
 
     @Test
     public void save_ReturnsProductResponse_WhenSuccessful() throws Exception {
-        final ProductRequest productRequest = getProductRequest();
+        final ProductRequestDto productRequest = getProductRequest();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/product")

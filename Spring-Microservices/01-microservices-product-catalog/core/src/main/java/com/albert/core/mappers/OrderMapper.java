@@ -1,8 +1,8 @@
-package com.albert.orderservice.mappers;
+package com.albert.core.mappers;
 
-import com.albert.orderservice.dto.OrderDto;
-import com.albert.orderservice.model.Order;
-import com.albert.orderservice.model.OrderLineItems;
+import com.albert.core.dto.OrderDto;
+import com.albert.core.models.order.Order;
+import com.albert.core.models.order.OrderLineItems;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

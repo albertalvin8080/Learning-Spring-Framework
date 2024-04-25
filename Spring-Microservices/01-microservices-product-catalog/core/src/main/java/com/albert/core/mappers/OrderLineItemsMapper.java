@@ -1,7 +1,7 @@
-package com.albert.orderservice.mappers;
+package com.albert.core.mappers;
 
-import com.albert.orderservice.dto.OrderLineItemsDto;
-import com.albert.orderservice.model.OrderLineItems;
+import com.albert.core.dto.OrderLineItemsDto;
+import com.albert.core.models.order.OrderLineItems;
 
 public class OrderLineItemsMapper
 {

@@ -1,8 +1,6 @@
-package com.albert.productservice.dto;
+package com.albert.core.dto;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
@@ -12,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ProductResponse
+public class ProductResponseDto
 {
     private String id;
     private String name;

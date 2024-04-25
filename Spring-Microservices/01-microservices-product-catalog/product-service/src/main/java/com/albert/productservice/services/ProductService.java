@@ -1,9 +1,9 @@
 package com.albert.productservice.services;
 
-import com.albert.productservice.dto.ProductRequest;
-import com.albert.productservice.dto.ProductResponse;
-import com.albert.productservice.mappers.ProductMapper;
-import com.albert.productservice.model.Product;
+import com.albert.core.dto.ProductRequestDto;
+import com.albert.core.dto.ProductResponseDto;
+import com.albert.core.mappers.ProductMapper;
+import com.albert.core.models.product.Product;
 import com.albert.productservice.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,12 @@ public class ProductService
     private final ProductMapper mapper = new ProductMapper();
     private final ProductRepository repository;
 
-    public ProductResponse save(ProductRequest productRequest) {
-        final Product saved = repository.save(mapper.from(productRequest));
+    public ProductResponseDto save(ProductRequestDto productRequestDto) {
+        final Product saved = repository.save(mapper.from(productRequestDto));
         return mapper.from(saved);
     }
 
-    public List<ProductResponse> findAll() {
+    public List<ProductResponseDto> findAll() {
         return repository.findAll()
                 .stream()
                 .map(mapper::from)

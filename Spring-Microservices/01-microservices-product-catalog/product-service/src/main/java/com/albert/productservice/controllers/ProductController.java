@@ -1,7 +1,7 @@
 package com.albert.productservice.controllers;
 
-import com.albert.productservice.dto.ProductRequest;
-import com.albert.productservice.dto.ProductResponse;
+import com.albert.core.dto.ProductRequestDto;
+import com.albert.core.dto.ProductResponseDto;
 import com.albert.productservice.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +18,13 @@ public class ProductController
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse save(@RequestBody ProductRequest productRequest) {
-        return service.save(productRequest);
+    public ProductResponseDto save(@RequestBody ProductRequestDto productRequestDto) {
+        return service.save(productRequestDto);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> findAll() {
+    public List<ProductResponseDto> findAll() {
         return service.findAll();
     }
 }

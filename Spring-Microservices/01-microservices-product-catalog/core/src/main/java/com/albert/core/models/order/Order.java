@@ -1,4 +1,4 @@
-package com.albert.orderservice.model;
+package com.albert.core.models.order;
 
 import jakarta.persistence.*;
 import lombok.*;
