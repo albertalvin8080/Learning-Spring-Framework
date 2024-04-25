@@ -8,7 +8,7 @@ public class TestApplication
 {
 
     public static void main(String[] args) {
-        SpringApplication.from(Application::main).with(TestApplication.class).run(args);
+        SpringApplication.from(ProductServiceApplication::main).with(TestApplication.class).run(args);
     }
 
 }
