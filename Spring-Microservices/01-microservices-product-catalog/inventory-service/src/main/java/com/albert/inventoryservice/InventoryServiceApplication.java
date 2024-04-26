@@ -6,12 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
 @SpringBootApplication(scanBasePackages = {"com.albert.inventoryservice", "com.albert.core"})
 @EntityScan(basePackages = {"com.albert.core.models.inventory"})
+@EnableDiscoveryClient
 public class InventoryServiceApplication
 {
 

@@ -24,7 +24,7 @@ public class OrderService
 {
     private final OrderRepository repository;
     private final OrderMapper orderMapper;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     @Value("${inventory.uri}")
     private String inventoryUri;
@@ -33,7 +33,7 @@ public class OrderService
         final List<String> skuCodeList = dto.getOrderLineItemsDtoList()
                 .stream().map(OrderLineItemsDto::getSkuCode).toList();
 
-        final InventoryResponseDto[] response = webClient.get()
+        final InventoryResponseDto[] response = webClientBuilder.build().get()
                 .uri(inventoryUri + "/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodeList).build()
                 )
