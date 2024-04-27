@@ -23,7 +23,7 @@ public class InventoryController
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<InventoryResponseDto> hasAllInStock(@RequestParam("skuCode") List<String> skuCode) {
+    public List<InventoryResponseDto> hasAllInStock(@RequestParam("skuCode") List<String> skuCode) throws InterruptedException {
         return service.hasAllInStock(skuCode);
     }
 }
