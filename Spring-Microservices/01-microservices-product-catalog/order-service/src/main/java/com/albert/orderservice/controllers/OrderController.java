@@ -21,7 +21,7 @@ public class OrderController
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "inventoryFailureFallback")
-    @TimeLimiter(name = "inventory")
+//    @TimeLimiter(name = "inventory")
     @Retry(name = "inventory")
     public CompletableFuture<String> placeOrder(@RequestBody OrderDto orderDto) {
         return CompletableFuture.supplyAsync(() -> service.placeOrder(orderDto));
