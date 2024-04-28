@@ -3,7 +3,7 @@
 
 CREATE SCHEMA IF NOT EXISTS webflux;
 
--- DROP TABLE IF EXISTS products.product;
+DROP TABLE IF EXISTS webflux.product;
 
 CREATE TABLE IF NOT EXISTS webflux.product
 (
@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS webflux.product
     name  VARCHAR(30)    NOT NULL,
     price DECIMAL(10, 2) NOT NULL
 );
+
+ALTER TABLE IF EXISTS webflux.product ALTER COLUMN id RESTART WITH 1;
 
 CREATE TABLE IF NOT EXISTS webflux.appUser
 (

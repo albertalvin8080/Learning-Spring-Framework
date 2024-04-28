@@ -43,7 +43,7 @@ public class ProductService
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Product> save(Product product) {
-//        log.info("UNDEAD id: {}", product.getId());
+        log.info("UNDEAD id: {}", product.getId());
         return productRepository.save(product.withId(null));
     }
 
@@ -62,7 +62,7 @@ public class ProductService
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Void> update(Product product) {
-//        log.info("UNDEAD id: {}", product.getId());
+        log.info("UNDEAD id: {}", product.getId());
         return findById(product.getId())  // Checks if really exists.
                 .then(Mono.just(product)) // Ignores the existing product.
                 .flatMap(productRepository::save)
@@ -71,7 +71,7 @@ public class ProductService
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Mono<Void> delete(Long id) {
-//        log.info("UNDEAD id: {}", id);
+        log.info("UNDEAD id: {}", id);
         return findById(id)
                 .flatMap(productRepository::delete);
     }
