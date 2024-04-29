@@ -29,6 +29,7 @@
 
     <build>
         <plugins>
+            <!-- Skipping this module, because it's not a spring app. -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
