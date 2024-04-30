@@ -142,8 +142,6 @@ services:
   #     - SPRING_PROFILES_ACTIVE=docker
   #   depends_on:
   #     - mongodb
-  #     - discovery-server
-  #     - api-gateway
   #   deploy:
   #     resources:
   #       reservations:
@@ -159,8 +157,6 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - mysqldb
-      - discovery-server
-      - api-gateway
     deploy:
       resources:
         reservations:
@@ -176,9 +172,6 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - mysqldb 
-#      - broker
-      - discovery-server
-      - api-gateway
       - inventory-service
     deploy:
       resources:
@@ -193,11 +186,6 @@ services:
 #    image: albertalvin/notification-service:latest
 #    environment:
 #      - SPRING_PROFILES_ACTIVE=docker
-#    depends_on:
-#      - broker
-#      - discovery-server
-#      - api-gateway
-#      - order-service
 #    deploy:
 #      resources:
 #        reservations:
