@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://loki:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>app=inventory-service,host=${HOSTNAME}</pattern>
+            </label>
+            <message>
+                <pattern>%-5level [%.5(${HOSTNAME})] %.10thread %logger{20} | %msg %ex</pattern>
+            </message>
+        </format>
+    </appender>
+    
+    <root level="DEBUG">
+        <appender-ref ref="LOKI" />
+    </root>
+</configuration>

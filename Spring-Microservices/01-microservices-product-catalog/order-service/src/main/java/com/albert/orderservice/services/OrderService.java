@@ -57,9 +57,10 @@ public class OrderService
         final Order order = orderMapper.from(dto);
         repository.save(order);
 
-        final OrderPlacedEvent orderPlacedEvent = OrderPlacedEvent.builder()
-                .orderNumber(order.getOrderNumber()).build();
-        kafkaTemplate.send("notificationTopic", orderPlacedEvent);
+        // send to kafka broker
+//        final OrderPlacedEvent orderPlacedEvent = OrderPlacedEvent.builder()
+//                .orderNumber(order.getOrderNumber()).build();
+//        kafkaTemplate.send("notificationTopic", orderPlacedEvent);
 
         return "Order %s placed successfully.".formatted(order.getOrderNumber());
     }
