@@ -1,21 +1,16 @@
 @REM The way jib-plugin works with children pom.xml is unnecessarily complex and coupled. So I just created this simple .bat which perfectly does the job.
 
-cd .\api-gateway
-call mvn jib:dockerBuild
+@echo off
+setlocal
 
-cd ..\discovery-server
-call mvn jib:dockerBuild
+set modules=api-gateway discovery-server inventory-service notification-service order-service product-service
 
-cd ..\product-service
-call mvn jib:dockerBuild
+for %%s in (%modules%) do (
+    cd %%s
+    echo Building %%s module...
+    call mvn jib:dockerBuild
+    cd ..
+)
 
-cd ..\inventory-service
-call mvn jib:dockerBuild
-
-cd ..\order-service
-call mvn jib:dockerBuild
-
-cd ..\notification-service
-call mvn jib:dockerBuild
-
-cd ..
+endlocal
+echo Build completed successfully.

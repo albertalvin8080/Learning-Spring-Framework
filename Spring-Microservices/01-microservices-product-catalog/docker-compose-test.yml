@@ -43,7 +43,7 @@ services:
     image: quay.io/keycloak/keycloak:24.0.2
     container_name: "keycloak"
     volumes:
-      - ./.docker-data/keycloak-data:/opt/keycloak/data
+      - ./.docker-data/keycloak:/opt/keycloak/data
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
