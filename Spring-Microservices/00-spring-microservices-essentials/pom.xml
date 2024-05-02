@@ -20,6 +20,7 @@
         <module>product-service</module>
         <module>discovery-server</module>
         <module>api-gateway</module>
+        <module>authentication-service</module>
     </modules>
 
     <properties>
@@ -83,6 +84,15 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <target>${java.version}</target>
+                    <source>${java.version}</source>
                 </configuration>
             </plugin>
         </plugins>

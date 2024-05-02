@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @Setter
@@ -13,17 +11,20 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "product")
-public class Product implements AbstractEntity
+@Table(name = "app_user")
+public class AppUser implements AbstractEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-    @NotNull(message = "Entity Product must have a name.")
+    @NotNull(message = "Entity AppUser must have a username.")
     @Column(nullable = false)
-    private String name;
-    @NotNull(message = "Entity Product must have a price.")
+    private String username;
+    @NotNull(message = "Entity AppUser must have a password.")
     @Column(nullable = false)
-    private BigDecimal price;
+    private String password;
+    @NotNull(message = "Entity AppUser must have at least one role.")
+    @Column(nullable = false)
+    private String roles = "USER";
 }
