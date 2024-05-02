@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "product")
+@Table(name = "product", schema = "microservices")
 public class Product implements AbstractEntity
 {
     @Id

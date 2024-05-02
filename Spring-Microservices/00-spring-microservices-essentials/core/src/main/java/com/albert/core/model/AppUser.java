@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "app_user")
+@Table(name = "app_user", schema = "microservices")
 public class AppUser implements AbstractEntity
 {
     @Id
@@ -24,7 +24,6 @@ public class AppUser implements AbstractEntity
     @NotNull(message = "Entity AppUser must have a password.")
     @Column(nullable = false)
     private String password;
-    @NotNull(message = "Entity AppUser must have at least one role.")
     @Column(nullable = false)
     private String roles = "USER";
 }
