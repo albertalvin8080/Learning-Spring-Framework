@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+    vault:
+        image: hashicorp/vault:1.16.2
+        container_name: vault
+        ports:
+        - "8200:8200"
+        
+# export VAULT_ADDR='http://0.0.0.0:8200'
+# vault login <your_token>
+# vault kv put secret/test username=albert password=1234
+# vault kv get secret/test
+# vault kv get -field=username secret/test
