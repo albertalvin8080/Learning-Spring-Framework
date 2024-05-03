@@ -25,12 +25,12 @@ public class SecurityConfig extends TokenSecurityConfig
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AppUserDetailsService appUserDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AppUserDetailsService appUserDetailsService, TokenCreator tokenCreator) throws Exception {
         httpSecurity
                 .addFilter(new JwtUsernamePasswordAuthenticationFilter(
                                 providerManager(appUserDetailsService),
                                 jwtConfig,
-                                new TokenCreator(jwtConfig)
+                                tokenCreator
                         )
                 );
         return super.securityFilterChain(httpSecurity);

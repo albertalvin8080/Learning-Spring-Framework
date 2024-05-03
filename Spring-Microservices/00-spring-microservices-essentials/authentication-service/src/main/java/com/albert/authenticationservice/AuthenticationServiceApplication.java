@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.albert.token", "com.albert.authenticationservice"})
 @EnableDiscoveryClient
 @EnableConfigurationProperties(value = JwtConfig.class)
 @EntityScan(basePackages = {"com.albert.core.model"})

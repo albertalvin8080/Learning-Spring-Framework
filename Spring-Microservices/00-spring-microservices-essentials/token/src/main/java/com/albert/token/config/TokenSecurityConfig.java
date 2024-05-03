@@ -24,6 +24,7 @@ public class TokenSecurityConfig {
                 ))
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(jwtConfig.getLoginUrl()).permitAll()
+                        .requestMatchers("/v1/admin/product").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
 
