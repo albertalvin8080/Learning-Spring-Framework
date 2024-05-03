@@ -3,7 +3,7 @@ CREATE SCHEMA microservices;
 CREATE TABLE microservices.product
 (
     id    SERIAL PRIMARY KEY,
-    name  VARCHAR(40)    NOT NULL,
+    name  VARCHAR(50)    NOT NULL,
     price DECIMAL(10, 3) NOT NULL
 );
 
@@ -16,9 +16,9 @@ VALUES ('Television', 500.00),
 CREATE TABLE microservices.app_user
 (
     id       SERIAL PRIMARY KEY,
-    username VARCHAR(40) NOT NULL,
-    password VARCHAR(40) NOT NULL,
-    roles    VARCHAR(40) NOT NULL
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    roles    VARCHAR(100) NOT NULL
 );
 
 INSERT INTO microservices.app_user

@@ -22,15 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -45,12 +42,12 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             final AppUser appUser = new ObjectMapper().readValue(request.getInputStream(), AppUser.class);
-            final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(appUser.getUsername(), appUser.getPassword(), Collections.emptyList());
+            final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(appUser.getUsername(), appUser.getPassword());
             token.setDetails(appUser);
             return authenticationManager.authenticate(token);
         }
         catch (Exception e) {
-            // Don't do this in production.
+            // Never do this in production.
             throw new RuntimeException(e);
         }
     }
@@ -59,22 +56,23 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         try {
             final SignedJWT signedJWT = createSignedJWT(authResult);
-            final String encryptedToken = encryptToken(signedJWT);
-            response.setHeader("Access-Control-Expose-Headers", "XSRF-TOKEN, "+ jwtConfig.getHeader().getName());
-            response.addHeader(jwtConfig.getHeader().getName(), jwtConfig.getHeader().getPrefix() + encryptedToken);
+            final String encryptedJWS = encryptJWS(signedJWT);
+            response.setHeader("Access-Control-Expose-Headers", "XSRF-TOKEN, " + jwtConfig.getHeader().getName());
+            response.addHeader(jwtConfig.getHeader().getName(), jwtConfig.getHeader().getPrefix() + encryptedJWS);
         }
         catch (Exception e) {
-            // Don't do this in production.
+            // Never do this in production.
             throw new RuntimeException(e);
         }
     }
 
     private SignedJWT createSignedJWT(Authentication authentication) throws NoSuchAlgorithmException, JOSEException {
         final AppUser appUser = (AppUser) authentication.getDetails();
-        final JWTClaimsSet jwtClaimSet = createJWTClaimSet(authentication, appUser);
 
+        final JWTClaimsSet jwtClaimSet = createJWTClaimSet(authentication, appUser);
         final KeyPair keyPair = generateKeyPair();
-        final JWK publicRSAKey = new RSAKey
+
+        final JWK rsaPublicKey = new RSAKey
                 .Builder((RSAPublicKey) keyPair.getPublic())
                 .keyID(UUID.randomUUID().toString())
                 .build();
@@ -82,31 +80,30 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
         final SignedJWT signedJWT = new SignedJWT(
                 new JWSHeader
                         .Builder(JWSAlgorithm.RS256)
-                        .jwk(publicRSAKey)
+                        .jwk(rsaPublicKey)
                         .type(JOSEObjectType.JWT)
                         .build(),
                 jwtClaimSet
         );
 
-        RSASSASigner signer = new RSASSASigner(keyPair.getPrivate());
-
+        final RSASSASigner signer = new RSASSASigner(keyPair.getPrivate());
         signedJWT.sign(signer);
         log.info("Signed JWT: {}", signedJWT.serialize());
+
         return signedJWT;
     }
 
     private JWTClaimsSet createJWTClaimSet(Authentication authentication, AppUser appUser) {
         return new JWTClaimsSet.Builder()
                 .subject(appUser.getUsername())
-                .claim("authorities",
-                        authentication.getAuthorities()
-                                .stream()
-                                .map(GrantedAuthority::getAuthority)
-                                .toList()
+                .claim("authorities", authentication.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList()
                 )
                 .issuer("http://albert.com")
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + (jwtConfig.getExpiration() * 1000)))
+                .expirationTime(new Date(System.currentTimeMillis() + (jwtConfig.getExpiration()) * 1000))
                 .build();
     }
 
@@ -116,12 +113,11 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
         return generator.generateKeyPair();
     }
 
-    private String encryptToken(SignedJWT signedJWT) throws JOSEException {
+    private String encryptJWS(SignedJWT signedJWT) throws JOSEException {
         final DirectEncrypter directEncrypter = new DirectEncrypter(jwtConfig.getPrivateKey().getBytes());
 
         final JWEObject jweObject = new JWEObject(
-                new JWEHeader
-                        .Builder(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256)
+                new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256)
                         .contentType("JWT")
                         .build(),
                 new Payload(signedJWT)
@@ -130,5 +126,4 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
         jweObject.encrypt(directEncrypter);
         return jweObject.serialize();
     }
-
 }
