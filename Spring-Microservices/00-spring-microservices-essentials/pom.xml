@@ -21,6 +21,7 @@
         <module>discovery-server</module>
         <module>api-gateway</module>
         <module>authentication-service</module>
+        <module>token</module>
     </modules>
 
     <properties>
