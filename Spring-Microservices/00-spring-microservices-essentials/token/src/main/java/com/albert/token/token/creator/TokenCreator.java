@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.albert.core.model.AppUser;
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class TokenCreator {
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
 
     public SignedJWT createSignedJWT(Authentication authentication) throws NoSuchAlgorithmException, JOSEException {
         final AppUser appUser = (AppUser) authentication.getDetails();
@@ -75,7 +75,7 @@ public class TokenCreator {
                 )
                 .issuer("http://albert.com")
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + (jwtConfig.getExpiration()) * 1000))
+                .expirationTime(new Date(System.currentTimeMillis() + (jwtConfiguration.getExpiration()) * 1000))
                 .build();
     }
 
@@ -86,7 +86,7 @@ public class TokenCreator {
     }
 
     public String encryptJWS(SignedJWT signedJWT) throws JOSEException {
-        final DirectEncrypter directEncrypter = new DirectEncrypter(jwtConfig.getPrivateKey().getBytes());
+        final DirectEncrypter directEncrypter = new DirectEncrypter(jwtConfiguration.getPrivateKey().getBytes());
 
         final JWEObject jweObject = new JWEObject(
                 new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256)

@@ -5,7 +5,7 @@ import java.text.ParseException;
 
 import org.springframework.stereotype.Component;
 
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.DirectDecrypter;
@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenConverter 
 {
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
 
     public SignedJWT decryptToken(String encryptedToken) throws ParseException, JOSEException {
         JWEObject jweObject = JWEObject.parse(encryptedToken);
-        DirectDecrypter directDecrypter = new DirectDecrypter(jwtConfig.getPrivateKey().getBytes());
+        DirectDecrypter directDecrypter = new DirectDecrypter(jwtConfiguration.getPrivateKey().getBytes());
         jweObject.decrypt(directDecrypter);
         return jweObject.getPayload().toSignedJWT();
     }

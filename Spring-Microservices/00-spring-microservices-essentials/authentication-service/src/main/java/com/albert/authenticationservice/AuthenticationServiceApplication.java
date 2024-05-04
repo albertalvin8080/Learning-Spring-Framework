@@ -1,6 +1,6 @@
 package com.albert.authenticationservice;
 
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.albert.token", "com.albert.authenticationservice"})
 @EnableDiscoveryClient
-@EnableConfigurationProperties(value = JwtConfig.class)
+@EnableConfigurationProperties(value = JwtConfiguration.class)
 @EntityScan(basePackages = {"com.albert.core.model"})
 @EnableJpaRepositories(basePackages = {"com.albert.core.repositories"})
 public class AuthenticationServiceApplication

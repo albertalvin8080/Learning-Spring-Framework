@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import com.albert.gateway.security.filters.GatewayJwtTokenValidationFilter;
 import com.albert.token.config.TokenSecurityConfig;
 import com.albert.token.token.converter.TokenConverter;
@@ -18,15 +18,15 @@ public class GatewaySecurityConfig extends TokenSecurityConfig
 {
     private final TokenConverter tokenConverter;
 
-    public GatewaySecurityConfig(JwtConfig jwtConfig, TokenConverter tokenConverter) {
-        super(jwtConfig);
+    public GatewaySecurityConfig(JwtConfiguration jwtConfiguration, TokenConverter tokenConverter) {
+        super(jwtConfiguration);
         this.tokenConverter = tokenConverter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .addFilterAfter(new GatewayJwtTokenValidationFilter(jwtConfig, tokenConverter), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new GatewayJwtTokenValidationFilter(jwtConfiguration, tokenConverter), UsernamePasswordAuthenticationFilter.class);
         return super.securityFilterChain(httpSecurity);
     }
 }

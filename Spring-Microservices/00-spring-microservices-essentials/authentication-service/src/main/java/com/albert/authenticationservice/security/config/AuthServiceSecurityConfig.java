@@ -2,7 +2,7 @@ package com.albert.authenticationservice.security.config;
 
 import com.albert.authenticationservice.security.filter.JwtUsernamePasswordAuthenticationFilter;
 import com.albert.authenticationservice.security.user.AppUserDetailsService;
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import com.albert.token.config.TokenSecurityConfig;
 import com.albert.token.token.creator.TokenCreator;
 
@@ -18,10 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends TokenSecurityConfig
+public class AuthServiceSecurityConfig extends TokenSecurityConfig
 {
-    public SecurityConfig(JwtConfig jwtConfig) {
-        super(jwtConfig);
+    public AuthServiceSecurityConfig(JwtConfiguration jwtConfiguration) {
+        super(jwtConfiguration);
     }
 
     @Bean
@@ -29,7 +29,7 @@ public class SecurityConfig extends TokenSecurityConfig
         httpSecurity
                 .addFilter(new JwtUsernamePasswordAuthenticationFilter(
                                 providerManager(appUserDetailsService),
-                                jwtConfig,
+                        jwtConfiguration,
                                 tokenCreator
                         )
                 );

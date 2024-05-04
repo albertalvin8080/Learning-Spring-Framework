@@ -1,24 +1,26 @@
-package com.albert.gateway.security.filters;
-
-import java.io.IOException;
-
-import com.albert.token.filters.JwtTokenValidationFilter;
+package com.albert.token.filters;
 
 import com.albert.core.properties.JwtConfiguration;
 import com.albert.token.token.converter.TokenConverter;
 import com.albert.token.token.util.TokenSecurityContextUtil;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.text.ParseException;
+
+@RequiredArgsConstructor
+public class JwtTokenValidationFilter extends OncePerRequestFilter
 {
-    public GatewayJwtTokenValidationFilter(JwtConfiguration jwtConfiguration, TokenConverter tokenConverter) {
-        super(jwtConfiguration, tokenConverter);
-    }
+    protected final JwtConfiguration jwtConfiguration;
+    protected final TokenConverter tokenConverter;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -32,7 +34,9 @@ public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
 
         String token = header.replace(jwtConfiguration.getHeader().getPrefix(), "").trim();
         try {
-            final SignedJWT signedJWT = decryptAndValidateToken(token);
+            SignedJWT signedJWT = jwtConfiguration.getType().equals("encrypted") ?
+                    decryptAndValidateToken(token)
+                    : validateToken(token);
 
             TokenSecurityContextUtil.setTokenInsideSecurityContext(signedJWT);
 
@@ -44,4 +48,14 @@ public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
         }
     }
 
+    protected SignedJWT decryptAndValidateToken(String encryptedToken) throws ParseException, JOSEException, AccessDeniedException {
+        final SignedJWT signedJWT = tokenConverter.decryptToken(encryptedToken);
+        tokenConverter.validateTokenSignature(signedJWT);
+        return signedJWT;
+    }
+
+    protected SignedJWT validateToken(String signedJWT) throws AccessDeniedException, ParseException, JOSEException {
+        tokenConverter.validateTokenSignature(signedJWT);
+        return SignedJWT.parse(signedJWT);
+    }
 }

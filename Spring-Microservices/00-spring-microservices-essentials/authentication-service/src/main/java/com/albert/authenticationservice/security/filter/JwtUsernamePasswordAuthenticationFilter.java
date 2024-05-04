@@ -1,7 +1,7 @@
 package com.albert.authenticationservice.security.filter;
 
 import com.albert.core.model.AppUser;
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 import com.albert.token.token.creator.TokenCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.SignedJWT;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter
 {
     private final AuthenticationManager authenticationManager;
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
     private final TokenCreator tokenCreator;
 
     @Override
@@ -44,8 +44,8 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
         try {
             final SignedJWT signedJWT = tokenCreator.createSignedJWT(authResult);
             final String encryptedJWS = tokenCreator.encryptJWS(signedJWT);
-            response.setHeader("Access-Control-Expose-Headers", "XSRF-TOKEN, " + jwtConfig.getHeader().getName());
-            response.addHeader(jwtConfig.getHeader().getName(), jwtConfig.getHeader().getPrefix() + encryptedJWS);
+            response.setHeader("Access-Control-Expose-Headers", "XSRF-TOKEN, " + jwtConfiguration.getHeader().getName());
+            response.addHeader(jwtConfiguration.getHeader().getName(), jwtConfiguration.getHeader().getPrefix() + encryptedJWS);
         }
         catch (Exception e) {
             // Never do this in production.

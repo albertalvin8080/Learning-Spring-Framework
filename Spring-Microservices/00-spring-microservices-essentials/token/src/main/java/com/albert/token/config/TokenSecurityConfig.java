@@ -5,14 +5,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.albert.core.properties.JwtConfig;
+import com.albert.core.properties.JwtConfiguration;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class TokenSecurityConfig {
-    protected final JwtConfig jwtConfig;
+    protected final JwtConfiguration jwtConfiguration;
 
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -24,7 +23,7 @@ public class TokenSecurityConfig {
 //                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
 //                ))
                 .authorizeHttpRequests(c -> c
-                        .requestMatchers(jwtConfig.getLoginUrl()).permitAll()
+                        .requestMatchers(jwtConfiguration.getLoginUrl()).permitAll()
                         .requestMatchers("/v1/admin/product").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );

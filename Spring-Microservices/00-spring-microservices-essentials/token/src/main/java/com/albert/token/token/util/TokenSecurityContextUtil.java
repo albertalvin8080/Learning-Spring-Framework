@@ -14,9 +14,9 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TokenSecurityUtil
+public class TokenSecurityContextUtil
 {
-    private TokenSecurityUtil() {}
+    private TokenSecurityContextUtil() {}
 
     public static void setTokenInsideSecurityContext(SignedJWT signedJWT) {
         try {
