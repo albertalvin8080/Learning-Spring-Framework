@@ -34,7 +34,7 @@ public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
         try {
             final SignedJWT signedJWT = decryptAndValidateToken(token);
 
-            TokenSecurityContextUtil.setTokenInsideSecurityContext(signedJWT);
+//            TokenSecurityContextUtil.setTokenInsideSecurityContext(signedJWT);
 
             filterChain.doFilter(request, response);
         }

@@ -73,6 +73,7 @@ public class TokenCreator {
                         .map(GrantedAuthority::getAuthority)
                         .toList()
                 )
+                .claim("userId", appUser.getId())
                 .issuer("http://albert.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis() + (jwtConfiguration.getExpiration()) * 1000))

@@ -3,6 +3,7 @@ package com.albert.token.token.util;
 import java.text.ParseException;
 import java.util.List;
 
+import com.albert.core.model.AppUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +26,16 @@ public class TokenSecurityContextUtil
             if(username == null)
                 throw new JOSEException("Subject missing from JWTClaimSet.");
 
+            final Long userId = jwtClaimsSet.getLongClaim("userId");
             List<String> claimList = jwtClaimsSet.getStringListClaim("authorities");
+            final AppUser appUser = AppUser.builder()
+                    .id(userId)
+                    .username(username)
+                    .roles(String.join(",", claimList))
+                    .build();
+
             List<SimpleGrantedAuthority> authorities = claimList.stream().map(SimpleGrantedAuthority::new).toList();
-            var token = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            var token = new UsernamePasswordAuthenticationToken(appUser, null, authorities);
             
             SecurityContextHolder.getContext().setAuthentication(token);
         } 

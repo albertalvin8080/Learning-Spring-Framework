@@ -4,6 +4,8 @@ import com.albert.authenticationservice.security.filter.JwtUsernamePasswordAuthe
 import com.albert.authenticationservice.security.user.AppUserDetailsService;
 import com.albert.core.properties.JwtConfiguration;
 import com.albert.token.config.TokenSecurityConfig;
+import com.albert.token.filters.JwtTokenValidationFilter;
+import com.albert.token.token.converter.TokenConverter;
 import com.albert.token.token.creator.TokenCreator;
 
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,13 +28,17 @@ public class AuthServiceSecurityConfig extends TokenSecurityConfig
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AppUserDetailsService appUserDetailsService, TokenCreator tokenCreator) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AppUserDetailsService appUserDetailsService, TokenCreator tokenCreator, TokenConverter tokenConverter) throws Exception {
         httpSecurity
                 .addFilter(new JwtUsernamePasswordAuthenticationFilter(
                                 providerManager(appUserDetailsService),
-                        jwtConfiguration,
+                                jwtConfiguration,
                                 tokenCreator
                         )
+                )
+                .addFilterAfter(
+                        new JwtTokenValidationFilter(jwtConfiguration, tokenConverter),
+                        UsernamePasswordAuthenticationFilter.class
                 );
         return super.securityFilterChain(httpSecurity);
     }
