@@ -14,11 +14,11 @@ import com.albert.token.token.converter.TokenConverter;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends TokenSecurityConfig 
+public class GatewaySecurityConfig extends TokenSecurityConfig
 {
     private final TokenConverter tokenConverter;
 
-    public SecurityConfig(JwtConfig jwtConfig, TokenConverter tokenConverter) {
+    public GatewaySecurityConfig(JwtConfig jwtConfig, TokenConverter tokenConverter) {
         super(jwtConfig);
         this.tokenConverter = tokenConverter;
     }
@@ -26,7 +26,7 @@ public class SecurityConfig extends TokenSecurityConfig
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .addFilterAfter(new GatewayJwtTokenValidationFilter(jwtConfig, tokenConverter), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new GatewayJwtTokenValidationFilter(jwtConfig, tokenConverter), UsernamePasswordAuthenticationFilter.class);
         return super.securityFilterChain(httpSecurity);
     }
 }

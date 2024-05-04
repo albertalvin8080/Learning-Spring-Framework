@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GatewayJwtTokenValidationFilter extends OncePerRequestFilter 
+public class GatewayJwtTokenValidationFilter extends OncePerRequestFilter
 {
     private final JwtConfig jwtConfig;
     private final TokenConverter tokenConverter;
@@ -25,8 +25,10 @@ public class GatewayJwtTokenValidationFilter extends OncePerRequestFilter
             throws ServletException, IOException {
         String header = request.getHeader(jwtConfig.getHeader().getName());
 
-        if(header == null || !header.startsWith(jwtConfig.getHeader().getPrefix()))
+        if(header == null || !header.startsWith(jwtConfig.getHeader().getPrefix())) {
             filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             String encryptedToken = header.replace(jwtConfig.getHeader().getPrefix(), "").trim();
@@ -36,7 +38,7 @@ public class GatewayJwtTokenValidationFilter extends OncePerRequestFilter
             TokenSecurityUtil.setTokenInsideSecurityContext(signedJWT);
 
             filterChain.doFilter(request, response);
-        } 
+        }
         catch(Exception e) {
             throw new RuntimeException(e);
         }

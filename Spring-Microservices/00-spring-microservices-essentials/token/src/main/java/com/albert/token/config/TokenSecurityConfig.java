@@ -19,9 +19,10 @@ public class TokenSecurityConfig {
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(c -> c.authenticationEntryPoint(
-                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
-                ))
+                // This can lead to confusion while debugging, like a 401 response when in fact it was 503.
+//                .exceptionHandling(c -> c.authenticationEntryPoint(
+//                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+//                ))
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(jwtConfig.getLoginUrl()).permitAll()
                         .requestMatchers("/v1/admin/product").hasRole("ADMIN")

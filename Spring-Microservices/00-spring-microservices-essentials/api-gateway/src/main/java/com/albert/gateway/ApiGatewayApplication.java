@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication(scanBasePackages = {"com.albert.gateway", "com.albert.token"})
+@SpringBootApplication(scanBasePackages = {"com.albert.gateway", "com.albert.token", "com.albert.core"})
 @EnableDiscoveryClient
 public class ApiGatewayApplication
 {
