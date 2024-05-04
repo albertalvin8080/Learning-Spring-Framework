@@ -2,6 +2,7 @@ package com.albert.gateway.security.filters;
 
 import java.io.IOException;
 
+import com.albert.gateway.security.header.MutableHttpServletRequest;
 import com.albert.token.filters.JwtTokenValidationFilter;
 
 import com.albert.core.properties.JwtConfiguration;
@@ -13,6 +14,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.server.ServerHttpRequest;
 
 public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
 {
@@ -34,7 +36,16 @@ public class GatewayJwtTokenValidationFilter extends JwtTokenValidationFilter
         try {
             final SignedJWT signedJWT = decryptAndValidateToken(token);
 
-//            TokenSecurityContextUtil.setTokenInsideSecurityContext(signedJWT);
+            // Yes, this line is necessary because you're doing endpoint-level authorization inside this gateway.
+            TokenSecurityContextUtil.setTokenInsideSecurityContext(signedJWT);
+
+            if (jwtConfiguration.getType().equalsIgnoreCase("signed")) {
+                request = new MutableHttpServletRequest(request)
+                        .putHeader(
+                                jwtConfiguration.getHeader().getName(),
+                                jwtConfiguration.getHeader().getPrefix() + signedJWT.serialize()
+                        );
+            }
 
             filterChain.doFilter(request, response);
         }
