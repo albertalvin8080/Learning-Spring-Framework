@@ -1,6 +1,7 @@
-package com.albert.authenticationservice.security.user;
+package com.albert.core.adapters;
 
 import com.albert.core.model.AppUser;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 @RequiredArgsConstructor
 public class UserDetailsAdapter implements UserDetails
 {

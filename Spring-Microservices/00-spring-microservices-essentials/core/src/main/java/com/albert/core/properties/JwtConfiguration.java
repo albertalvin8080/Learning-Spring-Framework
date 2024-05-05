@@ -17,11 +17,17 @@ public class JwtConfiguration
     private Header header = new Header();
     private Integer expiration = 3600;
     private String privateKey = "iFDH17ipeRkWZ1BUSvm84Aj4bCSAg4pv";
-    private String type = "signed"; // encrypted, signed
+    /**
+     * Possible values:
+     *  1. signed: the token travels decrypted between the services. The only decryption is done by the Api-Gateway.
+     *  2. encrypted: the token travels encrypted between the services.
+     */
+    private String type = "signed";
 
     @Getter
     @Setter
-    public static class Header {
+    public static class Header
+    {
         private String name = "Authorization";
         private String prefix = "Bearer ";
     }

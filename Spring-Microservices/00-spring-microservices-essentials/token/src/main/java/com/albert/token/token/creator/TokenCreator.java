@@ -7,6 +7,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.UUID;
 
+import com.albert.core.adapters.UserDetailsAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class TokenCreator {
     private final JwtConfiguration jwtConfiguration;
 
     public SignedJWT createSignedJWT(Authentication authentication) throws NoSuchAlgorithmException, JOSEException {
-        final AppUser appUser = (AppUser) authentication.getDetails();
+        final AppUser appUser = ((UserDetailsAdapter) authentication.getPrincipal()).getAppUser();
 
         final JWTClaimsSet jwtClaimSet = createJWTClaimSet(authentication, appUser);
         final KeyPair keyPair = generateKeyPair();

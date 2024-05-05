@@ -1,5 +1,6 @@
 package com.albert.authenticationservice.security.user;
 
+import com.albert.core.adapters.UserDetailsAdapter;
 import com.albert.core.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

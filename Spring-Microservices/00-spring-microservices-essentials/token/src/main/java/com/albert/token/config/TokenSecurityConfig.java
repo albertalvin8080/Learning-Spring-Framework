@@ -1,16 +1,16 @@
 package com.albert.token.config;
 
+import com.albert.core.properties.JwtConfiguration;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.albert.core.properties.JwtConfiguration;
-
-import lombok.RequiredArgsConstructor;
-
 @RequiredArgsConstructor
-public class TokenSecurityConfig {
+public class TokenSecurityConfig
+{
     protected final JwtConfiguration jwtConfiguration;
 
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -23,10 +23,13 @@ public class TokenSecurityConfig {
 //                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
 //                ))
                 .authorizeHttpRequests(c -> c
-                        .requestMatchers(jwtConfiguration.getLoginUrl()).permitAll()
-                        .requestMatchers("/v1/admin/product").hasRole("ADMIN")
+                                .requestMatchers(jwtConfiguration.getLoginUrl(), "/swagger-ui/index.html")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**")
+                                .permitAll()
+                                .requestMatchers("/v1/admin/product").hasRole("ADMIN")
 //                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 );
 
         return httpSecurity.build();
