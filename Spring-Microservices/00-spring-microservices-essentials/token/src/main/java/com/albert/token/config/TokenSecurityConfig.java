@@ -1,6 +1,7 @@
 package com.albert.token.config;
 
 import com.albert.core.properties.JwtConfiguration;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -16,21 +17,11 @@ public class TokenSecurityConfig
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(c -> c.disable())
-                .cors(Customizer.withDefaults())
+//                .cors(Customizer.withDefaults())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // This can lead to confusion while debugging, like a 401 response when in fact it was 503.
-//                .exceptionHandling(c -> c.authenticationEntryPoint(
-//                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
-//                ))
-                .authorizeHttpRequests(c -> c
-                                .requestMatchers(jwtConfiguration.getLoginUrl(), "/swagger-ui/index.html")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**")
-                                .permitAll()
-                                .requestMatchers("/v1/admin/product").hasRole("ADMIN")
-//                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
-                                .anyRequest().authenticated()
-                );
+                .exceptionHandling(c -> c.authenticationEntryPoint(
+                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                ));
 
         return httpSecurity.build();
     }

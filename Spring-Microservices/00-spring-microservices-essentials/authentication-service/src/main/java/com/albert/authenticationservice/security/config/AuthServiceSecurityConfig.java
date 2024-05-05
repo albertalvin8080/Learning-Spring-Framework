@@ -18,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +38,14 @@ public class AuthServiceSecurityConfig extends TokenSecurityConfig
                                 jwtConfiguration,
                                 tokenCreator
                         )
+                )
+                // Necessary for exposing swagger-ui endpoints to Api-Gateway
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
+                            final CorsConfiguration configuration = new CorsConfiguration();
+                            configuration.addAllowedOrigin("*"); // Change to the origin of the gateway
+                            configuration.addAllowedHeader(jwtConfiguration.getHeader().getName());
+                            return configuration;
+                        })
                 )
                 .addFilterAfter(
                         new JwtTokenValidationFilter(jwtConfiguration, tokenConverter),
