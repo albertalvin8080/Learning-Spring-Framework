@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read -p "Enter commit message: " commit_message
+read -p "Enter a commit message: " commit_message
 echo ""
 
 git add .

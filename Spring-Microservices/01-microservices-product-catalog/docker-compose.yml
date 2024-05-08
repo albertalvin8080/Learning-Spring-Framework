@@ -1,5 +1,15 @@
 version: "3.8"
 
+#Anchor | Alias
+x-deploy: &deploy
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [ gpu ]
+
 services: 
   mysqldb:
     image: mysql:8.0.36-debian
@@ -12,13 +22,7 @@ services:
       - ./.docker-data/mysql/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
     command:
       [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   # mongodb:
   #   image: mongo:5.0.25
@@ -28,13 +32,7 @@ services:
   #   environment:
   #     - MONGO_INITDB_ROOT_USERNAME=root
   #     - MONGO_INITDB_ROOT_PASSWORD=root
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities: [ gpu ]
+  #   <<: *deploy
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.2
@@ -49,13 +47,7 @@ services:
       - "8080:8080"
     command:
       [ "start-dev", "--http-port", "8080" ]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
 #  zookeeper:
 #    image: confluentinc/cp-zookeeper:7.0.1
@@ -65,13 +57,7 @@ services:
 #    environment:
 #      ZOOKEEPER_CLIENT_PORT: 2181
 #      ZOOKEEPER_TICK_TIME: 2000
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: all
-#              capabilities: [ gpu ]
+#    <<: *deploy
 #
 #  broker:
 #    image: confluentinc/cp-kafka:7.0.1
@@ -88,13 +74,7 @@ services:
 #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 #      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 #      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: all
-#              capabilities: [ gpu ]
+#    <<: *deploy
               
   discovery-server:
     image: albertalvin/discovery-server:latest
@@ -103,13 +83,7 @@ services:
       - "8761:8761"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   api-gateway:
     image: albertalvin/api-gateway:latest
@@ -124,13 +98,7 @@ services:
     depends_on:
       - discovery-server
       - keycloak
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
   
   # product-service:
   #   image: albertalvin/product-service:latest
@@ -142,13 +110,7 @@ services:
   #     - SPRING_PROFILES_ACTIVE=docker
   #   depends_on:
   #     - mongodb
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities: [ gpu ]
+  #   <<: *deploy
   
   inventory-service:
     container_name: inventory-service
@@ -157,13 +119,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - mysqldb
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   order-service:
     container_name: order-service
@@ -173,26 +129,14 @@ services:
     depends_on:
       - mysqldb 
       - inventory-service
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
 #  notification-service:
 #    container_name: notification-service
 #    image: albertalvin/notification-service:latest
 #    environment:
 #      - SPRING_PROFILES_ACTIVE=docker
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: all
-#              capabilities: [ gpu ]
+#    <<: *deploy
 
   prometheus:
     image: prom/prometheus:v2.50.1
@@ -203,13 +147,7 @@ services:
       [ "--config.file=/etc/prometheus/prometheus.yml" ]
     ports:
       - "9090:9090"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   grafana:
     image: grafana/grafana:10.2.4
@@ -226,26 +164,14 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   loki:
     image: grafana/loki:main
     command: [ "-config.file=/etc/loki/local-config.yaml" ]
     ports:
       - "3100:3100"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]
+    <<: *deploy
 
   tempo:
     image: grafana/tempo:2.2.2
@@ -256,10 +182,4 @@ services:
     ports:
       - "3110:3100"  # Tempo
       - "9411:9411" # zipkin
-    deploy:
-        resources:
-          reservations:
-            devices:
-              - driver: nvidia
-                count: all
-                capabilities: [ gpu ]
+    <<: *deploy
