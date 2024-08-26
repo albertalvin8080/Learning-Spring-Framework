@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragment Expression</title>
+</head>
+<body>
+    <!--  `path :: fragment selector name`  -->
+    <header th:replace="~{commons/header :: myheader}"></header>
+    <main>
+        <p>lorem lorem lorem lorem lorem lorem lorem lorem</p>
+    </main>
+    <!--  Even if it's a th:insert, the content inside this <footer> will be erased.  -->
+    <footer th:insert="~{commons/footer :: myfooter}">
+        <p>This tag will not be displayed</p>
+    </footer>
+</body>
+</html>

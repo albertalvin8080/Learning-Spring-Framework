@@ -68,4 +68,10 @@ public class BookController
         System.out.println(id);
         return "redirect:/link-expression?id="+id;
     }
+
+    @GetMapping(path = "/fragment-expression")
+    public String fragmentExpressionId()
+    {
+        return "fragment-expression";
+    }
 }

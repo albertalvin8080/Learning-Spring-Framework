@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Link Expression</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}"/>
 </head>
 <body>
 <p>
@@ -10,7 +11,7 @@
     <a th:href="@{/variable-expression.html}">Variable Expression View</a>
 </p>
 <p>
-    <!--  This one works becase the request first goes through the controller  -->
+    <!--  This one works because the request first goes through the controller  -->
     <a th:href="@{/variable-expression}">Variable Expression Controller</a>
 </p>
 <p>
@@ -29,6 +30,10 @@
     <!--  Multiple query params  -->
     <a th:href="@{/link-expression(id=${myid}, name=${myname}, age=30)}">Link with multiple query params</a>
 </p>
-<h1 th:text="${myid}">null</h1>
+    <!-- Displays 'null' if myid is not present -->
+    <!-- Elvis operator `?:` -->
+    <h1 th:text="${myid ?:'null'}">null</h1>
+    <!-- Ternary operator -->
+    <h1 th:text="${myid != null} ? ${myid} : 'null'">null</h1>
 </body>
 </html>
