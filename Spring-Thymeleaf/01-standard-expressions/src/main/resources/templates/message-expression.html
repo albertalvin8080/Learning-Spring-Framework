@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Expression</title>
+</head>
+<body>
+<!-- This one is not inside messages.properties and won't be correctly displayed. -->
+<h1 th:text="#{spring.application.name}"></h1>
+<!-- This one IS inside messages.properties. -->
+<h1 th:text="#{app.home}"></h1>
+</body>
+</html>

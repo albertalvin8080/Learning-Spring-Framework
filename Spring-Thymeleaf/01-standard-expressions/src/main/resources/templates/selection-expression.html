@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>selection-expression</title>
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/save}" method="POST" th:object="${book}">
+    <!--      <label for="id">Id</label>-->
+    <label>
+        Id:
+        <!-- th:field produces the attributes `id`, `name` and `value`. -->
+        <input type="text" th:field="*{id}"/>
+    </label>
+    <label>
+        Title:
+        <input type="text" th:field="*{title}"/>
+    </label>
+    <label>
+        Author:
+        <input type="text" th:field="*{author}"/>
+    </label>
+    <label>
+        Price:
+        <input type="number" th:field="*{price}"/>
+    </label>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

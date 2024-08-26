@@ -4,47 +4,48 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
-**/.idea/modules.xml
-**/.idea/jarRepositories.xml
-**/.idea/compiler.xml
-**/.idea/libraries/
-**/*.iws
-**/*.iml
-**/*.ipr
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
 
 ### Eclipse ###
-**/.apt_generated
+**/.apt_generated/
 **/.classpath
-**/.factorypath
+.factorypath
 **/.project
-**/.settings
-**/.springBeans
-**/.sts4-cache
+**/.settings/
+.springBeans
+.sts4-cache
 
 ### NetBeans ###
-**/nbproject/private/
-**/nbbuild/
-**/dist/
-**/nbdist/
-**/.nb-gradle/
-**/build/
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
-**/.vscode/
+.vscode/
 
 ### Mac OS ###
-**/.DS_Store
+.DS_Store
 
 _GITIGNORE/
-**/*.ipch
+*.ipch
 
-# JPA_Hibernate/first-test/mysql-data/
+JPA_Hibernate/first-test/mysql-data/
 **/mysql-data/
 
 **/.idea/
 **/.vscode/
+**/.vs
 
 **/grafana-storage/
 
@@ -53,6 +54,8 @@ _GITIGNORE/
 
 **/target/
 **/out/
+
+**/*.out
 
 **/mongodb_data/
 
@@ -76,9 +79,20 @@ _GITIGNORE/
 **/*.vcxproj.user
 **/*.h.gch # compiled header files
 
-**/postgres_data/
+**/*.class
 
--- TESTING --
-**/*.madmoiselle
-/Web2/iCabueta/nbproject/private/
-/Web2/iCabueta_v1/nbproject/private/
+**/.metadata
+
+**/.venv
+**/__pycache__
+**/.pytest_cache
+
+**/client.keystore
+**/client.truststore
+**/server.keystore
+**/server.truststore
+
+**/docker-data/
+
+#*/mvnw
+#*/mvnw.cmd
