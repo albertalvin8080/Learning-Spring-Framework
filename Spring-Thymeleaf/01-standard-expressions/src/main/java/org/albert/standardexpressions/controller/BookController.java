@@ -5,7 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
@@ -49,5 +51,21 @@ public class BookController
     public String messageExpression()
     {
         return "message-expression";
+    }
+
+    @GetMapping(path = "/link-expression")
+    public String linkExpression(@RequestParam(name = "id", required = false) Long id, Model model)
+    {
+        System.out.println(id);
+        model.addAttribute("myid", id);
+        return "link-expression";
+    }
+
+    @GetMapping(path = "/link-expression/{id}")
+    public String linkExpressionId(@PathVariable("id") Long id)
+    {
+        System.out.print("Path variable: ");
+        System.out.println(id);
+        return "redirect:/link-expression?id="+id;
     }
 }

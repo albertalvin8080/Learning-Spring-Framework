@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Expression</title>
+</head>
+<body>
+<p>
+    <!--  Doesn't work because points directly to a view  -->
+    <a th:href="@{/variable-expression.html}">Variable Expression View</a>
+</p>
+<p>
+    <!--  This one works becase the request first goes through the controller  -->
+    <a th:href="@{/variable-expression}">Variable Expression Controller</a>
+</p>
+<p>
+    <!--  Path variable with variable expression  -->
+    <a th:href="@{/link-expression/{id}(id=${myid})}">Path variable with variable expression (and redirect)</a>
+</p>
+<p>
+    <!--  Query param  -->
+    <a th:href="@{/link-expression?id=130}">This same page but with id = 130</a>
+</p>
+<p>
+    <!--  Query param with variable expression  -->
+    <a th:href="@{/link-expression(id=${myid})}">This same page but with id provided by the controller</a>
+</p>
+<p>
+    <!--  Multiple query params  -->
+    <a th:href="@{/link-expression(id=${myid}, name=${myname}, age=30)}">Link with multiple query params</a>
+</p>
+<h1 th:text="${myid}">null</h1>
+</body>
+</html>
