@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Switch Case</title>
+</head>
+<body>
+    <p>Name: <span th:text="${user.name}"></span></p>
+    <p>E-mail: <span th:text="${user.email}"></span></p>
+    <p>Gender: <span th:text="${user.gender}"></span></p>
+    <p>Password: <span th:text="${user.password.replaceAll('\w', '*')}"></span></p>
+    <div th:switch="${user.role}">
+        <p th:case="'ADMIN'">It's an admin</p>
+        <p th:case="'USER'">It's a common user</p>
+        <p th:case="*">It's something else</p>
+    </div>
+</body>
+</html>
