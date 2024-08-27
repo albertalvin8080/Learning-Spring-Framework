@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 public class BookController
@@ -73,5 +74,19 @@ public class BookController
     public String fragmentExpressionId()
     {
         return "fragment-expression";
+    }
+
+    @GetMapping(path = "/each-if-unless")
+    public String eachIfUnless(Model model)
+    {
+        final List<Book> books = List.of(
+                Book.builder().price(BigDecimal.valueOf(30.3)).author("Franz Bonaparta").id(1L).title("Monster").build(),
+                Book.builder().price(BigDecimal.valueOf(321.0)).author("Emil Sebe").id(2L).title("Monster").build(),
+                Book.builder().price(BigDecimal.valueOf(420.99)).author("Hemuth Voss").id(3L).title("Monster").build(),
+                Book.builder().price(BigDecimal.valueOf(21.0)).author("Klaus Poppe").id(4L).title("Monster").build(),
+                Book.builder().price(BigDecimal.valueOf(10.1)).author("Detestatio Sacrorum").id(5L).title("High Wills").build()
+        );
+        model.addAttribute("books", books);
+        return "each-if-unless";
     }
 }

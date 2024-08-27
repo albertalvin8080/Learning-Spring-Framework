@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Each If Unless</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th>odd/even</th>
+        <th>index</th>
+        <th>count</th>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book, status : ${books}">
+        <td th:if="${status.even}">even</td>
+        <td th:if="${status.odd}">odd</td>
+        <td th:text="${status.index}"></td>
+        <td th:text="${status.count}"></td>
+        <td th:text="${book.id}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.price}"></td>
+    </tr>
+    </tbody>
+</table>
+<p th:if="${books.get(0).id} == 1 and true">Id(0) IS one</p> <!-- OK -->
+<p th:if="${books.get(0).id} eq 1 and true">Id(0) IS one</p> <!-- OK -->
+<!--<p th:if="${books.get(0).id} eq 1 && true">Id(0) IS one</p> --> <!-- ERROR (cannot use &&) -->
+<p th:unless="${books.get(0).id} eq 2 and true">Id(0) is NOT two</p> <!-- OK -->
+</body>
+</html>
