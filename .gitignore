@@ -56,6 +56,8 @@ JPA_Hibernate/first-test/mysql-data/
 **/out/
 
 **/*.out
+**/*.o
+**/*.d
 
 **/mongodb_data/
 
@@ -96,3 +98,32 @@ JPA_Hibernate/first-test/mysql-data/
 
 #*/mvnw
 #*/mvnw.cmd
+
+**/*.egg-info 
+**/*.caffemodel
+# Not really necessary to exclude *.prototxt
+#**/*.prototxt 
+**/*.pb
+**/*.keras
+**/*.hd5
+**/wandb/
+**/*.h5
+**/*.weights.h5
+
+**/*.dll
+**/*.so
+**/*.lib
+
+tensorflow/04_lenet_model_malaria/preprocessed_*
+tensorflow/04_lenet_model_malaria/artifacts
+tensorflow/04_lenet_model_malaria/raw_dataset
+tensorflow/*/datasets/
+tensorflow/*/tfrecords
+
+**/.ipynb_checkpoints
+**/evaluation*/
+*/*/train/
+*/*/val/
+*/*/bundle/
+YOLOv10-structure.zip
+Ground-Truth-Evaluation/yolov10/
