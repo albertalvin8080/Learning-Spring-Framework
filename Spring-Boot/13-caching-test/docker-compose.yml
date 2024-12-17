@@ -1,3 +1,13 @@
+#Anchor | Alias
+x-deploy: &deploy
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [ gpu ]
+
 services:
   postgresql:
     image: postgres:15.10
@@ -8,8 +18,16 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: test_db
+    <<: *deploy
 #    volumes:
 #      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: redis:7.4.1
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    <<: *deploy
 
 # docker-compose up -d --build
 # docker exec -it postgresql bash
