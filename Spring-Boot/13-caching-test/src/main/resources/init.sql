@@ -1,4 +1,12 @@
+-- CREATE SEQUENCE IF NOT EXISTS company_seq
+--     START WITH 1
+--     INCREMENT BY 1
+--     NO MINVALUE
+--     NO MAXVALUE
+--     CACHE 1;
+
 CREATE TABLE IF NOT EXISTS company (
+--     company_id INT PRIMARY KEY DEFAULT nextval('company_seq'),
     company_id SERIAL PRIMARY KEY,
     company_name VARCHAR(100) NOT NULL
 );
